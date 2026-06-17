@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fasdeq13</title>
+<meta name="description" content="Fasdeq13 — systems & low-level developer. C++, Rust.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230a0d10'/%3E%3Ctext x='50' y='66' font-size='52' font-family='monospace' fill='%23f0a356' text-anchor='middle'%3E%3E_%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --font-disp:'Space Grotesk', system-ui, sans-serif;
+    --maxw:980px;
+    --r:14px;
+    --r-sm:8px;
+    --dur:.5s;
+  }
+  html[data-theme="dark"]{
+    --bg:#0a0d10;
+    --bg2:#0d1014;
+    --grid:rgba(255,255,255,.045);
+    --panel:#12161b;
+    --panel-2:#171c22;
+    --border:#242b32;
+    --border-soft:#1b2027;
+    --text:#eae6dc;
+    --text-dim:#8d949c;
+    --text-faint:#5d646c;
+    --accent:#f0a356;
+    --accent-soft:rgba(240,163,86,.13);
+    --accent-2:#5fb6ae;
+    --accent-2-soft:rgba(95,182,174,.13);
+    --on-accent:#0a0d10;
+    --shadow:0 24px 60px -24px rgba(0,0,0,.65);
+    --rust:#dea584;
+    --cpp:#e8597a;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f2e8;
+    --bg2:#f1ecdf;
+    --grid:rgba(30,25,15,.05);
+    --panel:#fffdf9;
+    --panel-2:#f1ebd9;
+    --border:#ddd2b8;
+    --border-soft:#e6dcc4;
+    --text:#1d2024;
+    --text-dim:#5e584a;
+    --text-faint:#8a8270;
+    --accent:#c06b1d;
+    --accent-soft:rgba(192,107,29,.12);
+    --accent-2:#1f7a73;
+    --accent-2-soft:rgba(31,122,115,.12);
+    --on-accent:#fff9f0;
+    --shadow:0 24px 50px -28px rgba(70,50,15,.3);
+    --rust:#b85c2e;
+    --cpp:#b8315f;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-disp);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    transition:background var(--dur) ease, color var(--dur) ease;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0);
+    background-size:28px 28px;
+    pointer-events:none;
+    z-index:0;
+    mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 40%, transparent 100%);
+  }
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  ::selection{background:var(--accent); color:var(--on-accent);}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .headbar{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0;}
+  .logo{font-family:var(--font-mono); font-weight:600; font-size:14px; color:var(--text-dim); display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .controls{display:flex; align-items:center; gap:6px;}
+  .langs{display:flex; gap:2px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:3px;}
+  .langs button{
+    font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.04em;
+    background:none; border:none; color:var(--text-faint); padding:6px 9px; border-radius:6px;
+    transition:all .2s ease;
+  }
+  .langs button:hover{color:var(--text);}
+  .langs button.active{background:var(--accent); color:var(--on-accent);}
+  .theme-btn{
+    width:32px; height:32px; display:grid; place-items:center;
+    background:var(--panel); border:1px solid var(--border); border-radius:8px; color:var(--text-dim);
+    transition:all .2s ease;
+  }
+  .theme-btn:hover{color:var(--accent); border-color:var(--accent);}
+  .theme-btn svg{width:15px; height:15px;}
+
+  .hero{padding:64px 0 56px;}
+  .term{
+    background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:7px; padding:11px 16px;
+    border-bottom:1px solid var(--border-soft); background:var(--panel-2);
+  }
+  .term-bar span{width:10px; height:10px; border-radius:50%; background:var(--border);}
+  .term-bar .path{margin-left:8px; font-family:var(--font-mono); font-size:11px; color:var(--text-faint);}
+  .term-body{padding:22px 22px 26px; font-family:var(--font-mono); font-size:14px; color:var(--text-dim); min-height:230px;}
+  .term-body .ln{white-space:pre-wrap; word-break:break-word; opacity:0; min-height:1.6em;}
+  .term-body .ln.show{opacity:1;}
+  .term-body .ok{color:var(--accent-2);}
+  .cursor{display:inline-block; width:8px; height:16px; background:var(--accent); vertical-align:middle; animation:blink 1s step-end infinite; margin-left:2px;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .hero-id{margin-top:30px; opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease;}
+  .hero-id.show{opacity:1; transform:translateY(0);}
+  .hero-name{font-family:var(--font-disp); font-weight:700; font-size:clamp(38px,7vw,64px); line-height:1; letter-spacing:-.02em; margin:0;}
+  .hero-name .px{color:var(--accent);}
+  .hero-tagline{margin:14px 0 0; font-size:clamp(15px,2.2vw,18px); color:var(--text-dim); max-width:560px;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px;}
+  .chip{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    border:1px solid var(--border); background:var(--panel); padding:6px 10px; border-radius:999px;
+    color:var(--text-faint); display:flex; align-items:center; gap:6px;
+  }
+  .chip b{color:var(--text); font-weight:600;}
+  .chip .lvdot{width:6px; height:6px; border-radius:50%; background:var(--accent-2);}
+
+  section{padding:64px 0;}
+  .eyebrow{font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.05em; margin:0 0 10px;}
+  .sec-title{font-family:var(--font-disp); font-size:clamp(26px,4vw,36px); font-weight:700; margin:0 0 8px; letter-spacing:-.01em;}
+  .sec-sub{color:var(--text-dim); margin:0 0 36px; max-width:560px; font-size:15px;}
+
+  .grid-proj{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
+    padding:22px; display:flex; flex-direction:column; gap:12px;
+    transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{transform:translateY(-3px); border-color:var(--accent); box-shadow:var(--shadow);}
+  .card-top{display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
+  .lang-tag{display:flex; align-items:center; gap:6px;}
+  .lang-tag .ld{width:8px; height:8px; border-radius:50%;}
+  .stars{display:flex; align-items:center; gap:4px;}
+  .stars svg{width:12px; height:12px; fill:var(--text-faint);}
+  .card h3{margin:0; font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--text);}
+  .card p{margin:0; color:var(--text-dim); font-size:13.5px; line-height:1.55; flex-grow:1;}
+  .card .go{font-family:var(--font-mono); font-size:12px; color:var(--accent); display:flex; align-items:center; gap:6px;}
+  .card .go svg{width:12px; height:12px; transition:transform .2s ease;}
+  .card:hover .go svg{transform:translate(3px,-3px);}
+
+  .grid-connect{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .conn-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
+    padding:24px; display:flex; flex-direction:column; gap:14px;
+    transition:transform .25s ease, border-color .25s ease;
+  }
+  .conn-card:hover{transform:translateY(-3px); border-color:var(--accent-2);}
+  .badge{
+    width:42px; height:42px; border-radius:10px; display:grid; place-items:center;
+    font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.02em;
+    background:var(--accent-2-soft); color:var(--accent-2); border:1px solid var(--border);
+  }
+  .conn-card h3{margin:0; font-size:17px; font-weight:700;}
+  .conn-card p{margin:0; color:var(--text-dim); font-size:13.5px;}
+  .conn-card .url{font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); margin-top:auto;}
+
+  footer{padding:34px 0 50px; border-top:1px solid var(--border-soft);}
+  footer .wrap{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+  footer p{margin:0; font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint);}
+
+  @media (max-width:760px){
+    .grid-proj{grid-template-columns:1fr;}
+    .grid-connect{grid-template-columns:1fr;}
+    .hero{padding:40px 0 36px;}
+    section{padding:46px 0;}
+    .term-body{font-size:12.5px; padding:18px;}
+    .headbar{padding:10px 0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <div class="logo"><span class="dot"></span>fasdeq13@web:~$</div>
+    <div class="controls">
+      <div class="langs" role="group" aria-label="language">
+        <button data-lang="ru" title="Русский">RU</button>
+        <button data-lang="ua" title="Українська">UA</button>
+        <button data-lang="by" title="Беларуская">BY</button>
+        <button data-lang="en" title="English">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="theme"></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="term">
+        <div class="term-bar">
+          <span style="background:#e8597a"></span><span style="background:#dea584"></span><span style="background:#5fb6ae"></span>
+          <span class="path">~/fasdeq13/profile.sh</span>
+        </div>
+        <div class="term-body" id="termBody"></div>
+      </div>
+
+      <div class="hero-id" id="heroId">
+        <h1 class="hero-name">Fasdeq<span class="px">13</span></h1>
+        <p class="hero-tagline" data-i18n="tagline"></p>
+        <div class="chips">
+          <span class="chip"><span class="lvdot"></span><span data-i18n="chipAge"></span>&nbsp;<b>14</b></span>
+          <span class="chip"><span class="lvdot"></span><span data-i18n="chipRole"></span></span>
+          <span class="chip"><span class="lvdot"></span><span data-i18n="chipStatus"></span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <p class="eyebrow">./projects</p>
+      <h2 class="sec-title" data-i18n="projTitle"></h2>
+      <p class="sec-sub" data-i18n="projSub"></p>
+      <div class="grid-proj">
+
+        <a class="card" href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
+            <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 6</span>
+          </div>
+          <h3>vulkan-cocoa-core</h3>
+          <p data-i18n="proj1"></p>
+          <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+
+        <a class="card" href="https://github.com/Fasdeq13/rustfetch" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
+            <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+          </div>
+          <h3>rustfetch</h3>
+          <p data-i18n="proj2"></p>
+          <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+
+        <a class="card" href="https://github.com/Fasdeq13/fasdinit" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
+            <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+          </div>
+          <h3>fasdinit</h3>
+          <p data-i18n="proj3"></p>
+          <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+
+        <a class="card" href="https://github.com/Fasdeq13/air2spirv" target="_blank" rel="noopener">
+          <div class="card-top">
+            <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
+            <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+          </div>
+          <h3>air2spirv</h3>
+          <p data-i18n="proj4"></p>
+          <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="connect">
+    <div class="wrap">
+      <p class="eyebrow">./contacts</p>
+      <h2 class="sec-title" data-i18n="connTitle"></h2>
+      <p class="sec-sub" data-i18n="connSub"></p>
+      <div class="grid-connect">
+
+        <a class="conn-card" href="https://github.com/Fasdeq13" target="_blank" rel="noopener">
+          <div class="badge">GH</div>
+          <h3>GitHub</h3>
+          <p data-i18n="ghCap"></p>
+          <span class="url">github.com/Fasdeq13</span>
+        </a>
+
+        <a class="conn-card" href="https://t.me/raZOVry" target="_blank" rel="noopener">
+          <div class="badge">TG</div>
+          <h3>Telegram</h3>
+          <p data-i18n="tgCap"></p>
+          <span class="url">t.me/raZOVry</span>
+        </a>
+
+        <a class="conn-card" href="https://steamcommunity.com/id/Fasdeq" target="_blank" rel="noopener">
+          <div class="badge">ST</div>
+          <h3>Steam</h3>
+          <p data-i18n="stCap"></p>
+          <span class="url">steamcommunity.com/id/Fasdeq</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p data-i18n="footer"></p>
+    <p>fasdeq13.sys · build 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var i18n = {
+    ru:{
+      tagline:"Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.",
+      chipAge:"возраст", chipRole:"systems / low-level dev", chipStatus:"online",
+      projTitle:"Репозитории", projSub:"Мои репозитории",
+      proj1:"Графический мост, который переводит интерфейсы Apple Cocoa, CoreAnimation и Metal 3 напрямую в нативные вызовы Vulkan 1.3 на уровне ядра Darwin/XNU — самостоятельный бэкенд, заменяющий проприетарный Apple WindowServer на обычном ПК.",
+      proj2:"Быстрая и лёгкая утилита для вывода информации о системе на Rust: без рантайм-зависимостей, с авто-выравниванием текста и модульной архитектурой.",
+      proj3:"Собственная init-система — лёгкая и быстрая альтернатива классическим init-демонам.",
+      proj4:"JIT-компилятор и транслятор IR, переводящий байткод Apple Metal AIR напрямую в формат Khronos SPIR-V для Vulkan.",
+      cardLink:"открыть репозиторий",
+      connTitle:"На связи", connSub:"Если хочешь обсудить проект, поиграть или просто написать — выбирай канал.",
+      ghCap:"исходный код и проекты", tgCap:"написать мне напрямую", stCap:"игровой профиль",
+      footer:"собрано вручную, без фреймворков",
+      boot:["> boot fasdeq13.sys","[ ok ] загрузка модулей ядра","[ ok ] монтирование /home/projects","[ ok ] инициализация profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
+    },
+    ua:{
+      tagline:"Пишу на C++ і Rust те, що зазвичай живе глибоко всередині системи.",
+      chipAge:"вік", chipRole:"systems / low-level dev", chipStatus:"online",
+      projTitle:"Репозиторії", projSub:"Те, що я пишу у вільний час — без купюр і без багажу ентерпрайзу.",
+      proj1:"Графічний міст, який перетворює інтерфейси Apple Cocoa, CoreAnimation і Metal 3 безпосередньо у нативні виклики Vulkan 1.3 на рівні ядра Darwin/XNU — самостійний бекенд, що замінює пропрієтарний Apple WindowServer на звичайному ПК.",
+      proj2:"Швидка й легка утиліта для виводу інформації про систему на Rust: без рантайм-залежностей, з авто-вирівнюванням тексту та модульною архітектурою.",
+      proj3:"Власна init-система — легка і швидка альтернатива класичним init-демонам.",
+      proj4:"JIT-компілятор і транслятор IR, що перетворює байткод Apple Metal AIR безпосередньо у формат Khronos SPIR-V для Vulkan.",
+      cardLink:"відкрити репозиторій",
+      connTitle:"На зв'язку", connSub:"Якщо хочеш обговорити проєкт, пограти або просто написати — обирай канал.",
+      ghCap:"вихідний код і проєкти", tgCap:"написати мені напряму", stCap:"ігровий профіль",
+      footer:"зібрано вручну, без фреймворків",
+      boot:["> boot fasdeq13.sys","[ ok ] завантаження модулів ядра","[ ok ] монтування /home/projects","[ ok ] ініціалізація profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
+    },
+    by:{
+      tagline:"Пішу на C++ і Rust тое, што звычайна жыве глыбока ўнутры сістэмы.",
+      chipAge:"узрост", chipRole:"systems / low-level dev", chipStatus:"online",
+      projTitle:"Рэпазіторыі", projSub:"Тое, што я пішу ў вольны час — без купюр і без багажу энтэрпрайзу.",
+      proj1:"Графічны мост, які пераўтварае інтэрфейсы Apple Cocoa, CoreAnimation і Metal 3 непасрэдна ў натыўныя выклікі Vulkan 1.3 на ўзроўні ядра Darwin/XNU — самастойны бэкенд, які замяняе прапрыетарны Apple WindowServer на звычайным ПК.",
+      proj2:"Хуткая і лёгкая ўтыліта для вываду інфармацыі пра сістэму на Rust: без рантайм-залежнасцяў, з аўта-выраўноўваннем тэксту і модульнай архітэктурай.",
+      proj3:"Уласная init-сістэма — лёгкая і хуткая альтэрнатыва класічным init-дэманам.",
+      proj4:"JIT-кампілятар і транслятар IR, які пераўтварае байт-код Apple Metal AIR непасрэдна ў фармат Khronos SPIR-V для Vulkan.",
+      cardLink:"адкрыць рэпазіторый",
+      connTitle:"На сувязі", connSub:"Калі хочаш абмеркаваць праект, пагуляць або проста напісаць — абірай канал.",
+      ghCap:"зыходны код і праекты", tgCap:"напісаць мне напрамую", stCap:"гульнявы профіль",
+      footer:"сабрана ўручную, без фрэймворкаў",
+      boot:["> boot fasdeq13.sys","[ ok ] загрузка модуляў ядра","[ ok ] мантаванне /home/projects","[ ok ] ініцыялізацыя profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
+    },
+    en:{
+      tagline:"I write the C++ and Rust that usually lives deep inside the system.",
+      chipAge:"age", chipRole:"systems / low-level dev", chipStatus:"online",
+      projTitle:"Repositories", projSub:"What I build in my spare time — no filter, no enterprise baggage.",
+      proj1:"A graphics bridge that translates Apple's Cocoa, CoreAnimation, and Metal 3 interfaces directly into native Vulkan 1.3 calls at the Darwin/XNU kernel level — a standalone backend that replaces Apple's proprietary WindowServer on regular PC hardware.",
+      proj2:"A fast, lightweight system-info tool written in Rust: zero runtime dependencies, smart text auto-alignment, and a modular codebase.",
+      proj3:"A custom init system — a lightweight, fast alternative to classic init daemons.",
+      proj4:"A JIT compiler and IR transformer that translates Apple Metal AIR bitcode directly into Khronos SPIR-V for Vulkan.",
+      cardLink:"open repository",
+      connTitle:"Connect", connSub:"Want to talk about a project, play something, or just say hi — pick a channel.",
+      ghCap:"source code & projects", tgCap:"message me directly", stCap:"gaming profile",
+      footer:"hand-built, no frameworks",
+      boot:["> boot fasdeq13.sys","[ ok ] loading kernel modules","[ ok ] mounting /home/projects","[ ok ] initializing profile.json","> whoami","Fasdeq13 — systems / low-level developer","status: online"]
+    }
+  };
+
+  var root = document.documentElement;
+  var termBody = document.getElementById('termBody');
+  var heroId = document.getElementById('heroId');
+  var bootDone = false;
+  var currentLang = 'ru';
+
+  function detectLang(){
+    var saved = localStorage.getItem('f13-lang');
+    if (saved && i18n[saved]) return saved;
+    var nav = (navigator.language || 'ru').toLowerCase();
+    if (nav.indexOf('uk') === 0) return 'ua';
+    if (nav.indexOf('be') === 0) return 'by';
+    if (nav.indexOf('en') === 0) return 'en';
+    return 'ru';
+  }
+
+  function applyStaticText(lang){
+    var d = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if (key === 'cardLink') return;
+      if (d[key] !== undefined) el.textContent = d[key];
+    });
+    document.querySelectorAll('[data-i18n="cardLink"]').forEach(function(el){
+      if (el.firstChild && el.firstChild.nodeType === 3) el.firstChild.remove();
+      el.insertBefore(document.createTextNode(d.cardLink + ' '), el.firstChild);
+    });
+  }
+
+  function setLang(lang){
+    if (!i18n[lang]) lang = 'ru';
+    currentLang = lang;
+    localStorage.setItem('f13-lang', lang);
+    var map = {ru:'ru', ua:'uk', by:'be', en:'en'};
+    root.setAttribute('lang', map[lang] || 'ru');
+    document.querySelectorAll('.langs button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    applyStaticText(lang);
+    if (bootDone){
+      renderBootStatic(lang);
+    }
+  }
+
+  function renderBootStatic(lang){
+    var lines = i18n[lang].boot;
+    termBody.innerHTML = lines.map(function(l, i){
+      var safe = l.replace(/\[ ok \]/, '<span class="ok">[ ok ]</span>');
+      return '<div class="ln show">' + safe + (i === lines.length-1 ? '<span class="cursor"></span>' : '') + '</div>';
+    }).join('');
+  }
+
+  function runBoot(lang){
+    var lines = i18n[lang].boot;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced){
+      renderBootStatic(lang);
+      bootDone = true;
+      heroId.classList.add('show');
+      return;
+    }
+    var container = termBody;
+    container.innerHTML = '';
+    var i = 0;
+    function nextLine(){
+      if (i >= lines.length){
+        bootDone = true;
+        heroId.classList.add('show');
+        return;
+      }
+      var raw = lines[i];
+      var div = document.createElement('div');
+      div.className = 'ln show';
+      container.appendChild(div);
+      var j = 0;
+      var isOk = raw.indexOf('[ ok ]') === 0;
+      var typed = '';
+      var speed = 14;
+      (function type(){
+        if (j <= raw.length){
+          typed = raw.slice(0, j);
+          div.innerHTML = isOk ? typed.replace('[ ok ]', '<span class="ok">[ ok ]</span>') : typed;
+          j++;
+          setTimeout(type, speed);
+        } else {
+          if (i === lines.length - 1){
+            div.innerHTML += '<span class="cursor"></span>';
+          }
+          i++;
+          setTimeout(nextLine, isOk ? 140 : 220);
+        }
+      })();
+    }
+    nextLine();
+  }
+
+  var THEME_KEY = 'f13-theme';
+  var sunIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var moonIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>';
+  var autoIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M7 21h10M12 18v3"/></svg>';
+  var themeBtn = document.getElementById('themeBtn');
+  var mql = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function resolveTheme(mode){
+    if (mode === 'auto') return mql.matches ? 'dark' : 'light';
+    return mode;
+  }
+  function setTheme(mode){
+    localStorage.setItem(THEME_KEY, mode);
+    root.setAttribute('data-theme', resolveTheme(mode));
+    themeBtn.innerHTML = mode === 'auto' ? autoIcon : (mode === 'dark' ? moonIcon : sunIcon);
+    themeBtn.setAttribute('data-mode', mode);
+  }
+  themeBtn.addEventListener('click', function(){
+    var cur = localStorage.getItem(THEME_KEY) || 'auto';
+    var next = cur === 'auto' ? 'dark' : (cur === 'dark' ? 'light' : 'auto');
+    setTheme(next);
+  });
+  mql.addEventListener('change', function(){
+    var cur = localStorage.getItem(THEME_KEY) || 'auto';
+    if (cur === 'auto') setTheme('auto');
+  });
+
+  document.querySelectorAll('.langs button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+
+  setTheme(localStorage.getItem(THEME_KEY) || 'auto');
+  var lang = detectLang();
+  setLang(lang);
+  runBoot(lang);
+
+})();
+</script>
+
+</body>
+</html>
