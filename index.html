@@ -152,19 +152,26 @@
   .sec-title{font-family:var(--font-disp); font-size:clamp(26px,4vw,36px); font-weight:700; margin:0 0 8px; letter-spacing:-.01em;}
   .sec-sub{color:var(--text-dim); margin:0 0 36px; max-width:560px; font-size:15px;}
 
-  .grid-proj{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .grid-proj{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media (max-width:900px) and (min-width:761px){
+    .grid-proj{grid-template-columns:1fr 1fr;}
+  }
   .card{
     background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
     padding:22px; display:flex; flex-direction:column; gap:12px;
     transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
   }
   .card:hover{transform:translateY(-3px); border-color:var(--accent); box-shadow:var(--shadow);}
+  .card-clickable{cursor:pointer;}
   .card-top{display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
   .lang-tag{display:flex; align-items:center; gap:6px;}
   .lang-tag .ld{width:8px; height:8px; border-radius:50%;}
   .stars{display:flex; align-items:center; gap:4px;}
   .stars svg{width:12px; height:12px; fill:var(--text-faint);}
   .card h3{margin:0; font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--text);}
+  .card .fork-of{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin:-6px 0 0;}
+  .card .fork-of a{color:var(--accent-2); text-decoration:underline; text-decoration-color:transparent; transition:text-decoration-color .2s ease;}
+  .card .fork-of a:hover{text-decoration-color:var(--accent-2);}
   .card p{margin:0; color:var(--text-dim); font-size:13.5px; line-height:1.55; flex-grow:1;}
   .card .go{font-family:var(--font-mono); font-size:12px; color:var(--accent); display:flex; align-items:center; gap:6px;}
   .card .go svg{width:12px; height:12px; transition:transform .2s ease;}
@@ -260,35 +267,46 @@
   <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
 </a>
 
-<a class="card" href="https://github.com/Fasdeq13/rustfetch" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
-  </div>
-  <h3>rustfetch</h3>
-  <p data-i18n="proj2"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<a class="card" href="https://github.com/Fasdeq13/fasdinit" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
-  </div>
-  <h3>fasdinit</h3>
-  <p data-i18n="proj3"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<a class="card" href="https://github.com/Fasdeq13/air2spirv" target="_blank" rel="noopener">
+<a class="card" href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener">
   <div class="card-top">
     <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
     <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
   </div>
-  <h3>air2spirv</h3>
+  <h3>FasdQuery</h3>
+  <p data-i18n="proj2"></p>
+  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+</a>
+
+<a class="card" href="https://github.com/Fasdeq13/Linux-Process-Hacker" target="_blank" rel="noopener">
+  <div class="card-top">
+    <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+  </div>
+  <h3>Linux-Process-Hacker</h3>
+  <p data-i18n="proj3"></p>
+  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+</a>
+
+<a class="card" href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener">
+  <div class="card-top">
+    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+  </div>
+  <h3>FasdCommander</h3>
   <p data-i18n="proj4"></p>
   <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
 </a>
+
+<div class="card card-clickable" data-href="https://github.com/Fasdeq13/MakuTweaker_linux" tabindex="0" role="link">
+  <div class="card-top">
+    <span class="lang-tag"><span class="ld" style="background:#8a8a8a"></span>C</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+  </div>
+  <h3>MakuTweaker_linux</h3>
+  <p class="fork-of" id="forkPrefix"><a href="https://github.com/MarkAdderly/MakuTweaker" target="_blank" rel="noopener">MarkAdderly/MakuTweaker</a></p>
+  <p data-i18n="proj5"></p>
+  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+</div>
       </div>
     </div>
   </section>
@@ -342,53 +360,64 @@
       tagline:"Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.",
       chipAge:"возраст", chipRole:"systems / low-level dev", chipStatus:"online",
       projTitle:"Репозитории", projSub:"Мои репозитории",
+      connTitle:"Контакты", connSub:"",
       proj1:"Графический мост, который переводит интерфейсы Apple Cocoa, CoreAnimation и Metal 3 напрямую в нативные вызовы Vulkan 1.3 на уровне ядра Darwin/XNU — самостоятельный бэкенд, заменяющий проприетарный Apple WindowServer на обычном ПК.",
-      proj2:"Быстрая и лёгкая утилита для вывода информации о системе на Rust: без рантайм-зависимостей, с авто-выравниванием текста и модульной архитектурой.",
-      proj3:"Собственная init-система — лёгкая и быстрая альтернатива классическим init-демонам.",
-      proj4:"JIT-компилятор и транслятор IR, переводящий байткод Apple Metal AIR напрямую в формат Khronos SPIR-V для Vulkan.",
+      proj2:"Молниеносный движок для поиска файлов в реальном времени с графическим интерфейсом для Linux. Написан на C++ и Qt6, оптимизирован под скорость и минимальный расход памяти.",
+      proj3:"Process Hacker, собранный на Qt для ядра Linux — инструмент для мониторинга и управления процессами системы.",
+      proj4:"Кроссплатформенный файловый менеджер в двух панелях, вдохновлённый классическими коммандерами.",
+      proj5:"Исходный код MakuTweaker для Linux.",
+      forkedFrom:"форк от",
       cardLink:"открыть репозиторий",
       ghCap:"исходный код и проекты", tgCap:"написать мне напрямую", stCap:"игровой профиль",
-      footer:"собрано вручную, без фреймворков",
+      footer:"",
       boot:["> boot fasdeq13.sys","[ ok ] загрузка модулей ядра","[ ok ] монтирование /home/projects","[ ok ] инициализация profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
     },
     ua:{
       tagline:"Пишу на C++ і Rust те, що зазвичай живе глибоко всередині системи.",
       chipAge:"вік", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Репозиторії", projSub:"Те, що я пишу у вільний час — без купюр і без багажу ентерпрайзу.",
+      projTitle:"Репозиторії", projSub:"Мої репозиторії",
       proj1:"Графічний міст, який перетворює інтерфейси Apple Cocoa, CoreAnimation і Metal 3 безпосередньо у нативні виклики Vulkan 1.3 на рівні ядра Darwin/XNU — самостійний бекенд, що замінює пропрієтарний Apple WindowServer на звичайному ПК.",
-      proj2:"Швидка й легка утиліта для виводу інформації про систему на Rust: без рантайм-залежностей, з авто-вирівнюванням тексту та модульною архітектурою.",
-      proj3:"Власна init-система — легка і швидка альтернатива класичним init-демонам.",
-      proj4:"JIT-компілятор і транслятор IR, що перетворює байткод Apple Metal AIR безпосередньо у формат Khronos SPIR-V для Vulkan.",
+      proj2:"Блискавичний рушій для пошуку файлів у реальному часі з графічним інтерфейсом для Linux. Написаний на C++ і Qt6, оптимізований під швидкість і мінімальні витрати пам'яті.",
+      proj3:"Process Hacker, зібраний на Qt для ядра Linux — інструмент для моніторингу та керування процесами системи.",
+      proj4:"Кросплатформний файловий менеджер у двох панелях, натхненний класичними коммандерами.",
+      proj5:"Вихідний код MakuTweaker для Linux.",
+      forkedFrom:"форк від",
       cardLink:"відкрити репозиторій",
-      connTitle:"На зв'язку", connSub:"Якщо хочеш обговорити проєкт, пограти або просто написати — обирай канал.",
+      connTitle:"Контакти", connSub:"",
       ghCap:"вихідний код і проєкти", tgCap:"написати мені напряму", stCap:"ігровий профіль",
-      footer:"зібрано вручну, без фреймворків",
+      footer:"",
       boot:["> boot fasdeq13.sys","[ ok ] завантаження модулів ядра","[ ok ] монтування /home/projects","[ ok ] ініціалізація profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
     },
     by:{
       tagline:"Пішу на C++ і Rust тое, што звычайна жыве глыбока ўнутры сістэмы.",
       chipAge:"узрост", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Рэпазіторыі", projSub:"Тое, што я пішу ў вольны час — без купюр і без багажу энтэрпрайзу.",
+      projTitle:"Рэпазіторыі", projSub:"Мае рэпазіторыі",
+      connTitle:"Кантакты", connSub:"",
       proj1:"Графічны мост, які пераўтварае інтэрфейсы Apple Cocoa, CoreAnimation і Metal 3 непасрэдна ў натыўныя выклікі Vulkan 1.3 на ўзроўні ядра Darwin/XNU — самастойны бэкенд, які замяняе прапрыетарны Apple WindowServer на звычайным ПК.",
-      proj2:"Хуткая і лёгкая ўтыліта для вываду інфармацыі пра сістэму на Rust: без рантайм-залежнасцяў, з аўта-выраўноўваннем тэксту і модульнай архітэктурай.",
-      proj3:"Уласная init-сістэма — лёгкая і хуткая альтэрнатыва класічным init-дэманам.",
-      proj4:"JIT-кампілятар і транслятар IR, які пераўтварае байт-код Apple Metal AIR непасрэдна ў фармат Khronos SPIR-V для Vulkan.",
+      proj2:"Маланкава хуткі рухавік для пошуку файлаў у рэальным часе з графічным інтэрфейсам для Linux. Напісаны на C++ і Qt6, аптымізаваны пад хуткасць і мінімальнае спажыванне памяці.",
+      proj3:"Process Hacker, сабраны на Qt для ядра Linux — інструмент для маніторынгу і кіравання працэсамі сістэмы.",
+      proj4:"Крос-платформавы файлавы менеджар у дзвюх панэлях, натхнёны класічнымі коммандерамі.",
+      proj5:"Зыходны код MakuTweaker для Linux.",
+      forkedFrom:"форк ад",
       cardLink:"адкрыць рэпазіторый",
       ghCap:"зыходны код і праекты", tgCap:"напісаць мне напрамую", stCap:"гульнявы профіль",
-      footer:"сабрана ўручную, без фрэймворкаў",
+      footer:"",
       boot:["> boot fasdeq13.sys","[ ok ] загрузка модуляў ядра","[ ok ] мантаванне /home/projects","[ ok ] ініцыялізацыя profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
     },
     en:{
       tagline:"I write the C++ and Rust that usually lives deep inside the system.",
       chipAge:"age", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Repositories", projSub:"What I build in my spare time — no filter, no enterprise baggage.",
+      projTitle:"Repositories", projSub:"My repositories",
+      connTitle:"Contacts", connSub:"",
       proj1:"A graphics bridge that translates Apple's Cocoa, CoreAnimation, and Metal 3 interfaces directly into native Vulkan 1.3 calls at the Darwin/XNU kernel level — a standalone backend that replaces Apple's proprietary WindowServer on regular PC hardware.",
-      proj2:"A fast, lightweight system-info tool written in Rust: zero runtime dependencies, smart text auto-alignment, and a modular codebase.",
-      proj3:"A custom init system — a lightweight, fast alternative to classic init daemons.",
-      proj4:"A JIT compiler and IR transformer that translates Apple Metal AIR bitcode directly into Khronos SPIR-V for Vulkan.",
+      proj2:"A blazing-fast, real-time file search engine and GUI for Linux, written in C++ and Qt6. Optimized for speed and low memory footprint.",
+      proj3:"Process Hacker built with Qt for the Linux kernel — a tool for monitoring and managing system processes.",
+      proj4:"A cross-platform, dual-pane file manager inspired by classic file commanders.",
+      proj5:"Source code of MakuTweaker for Linux.",
+      forkedFrom:"forked from",
       cardLink:"open repository",
       ghCap:"source code & projects", tgCap:"message me directly", stCap:"gaming profile",
-      footer:"hand-built, no frameworks",
+      footer:"",
       boot:["> boot fasdeq13.sys","[ ok ] loading kernel modules","[ ok ] mounting /home/projects","[ ok ] initializing profile.json","> whoami","Fasdeq13 — systems / low-level developer","status: online"]
     }
   };
@@ -420,6 +449,11 @@
       if (el.firstChild && el.firstChild.nodeType === 3) el.firstChild.remove();
       el.insertBefore(document.createTextNode(d.cardLink + ' '), el.firstChild);
     });
+    var forkEl = document.getElementById('forkPrefix');
+    if (forkEl && d.forkedFrom !== undefined){
+      if (forkEl.firstChild && forkEl.firstChild.nodeType === 3) forkEl.firstChild.remove();
+      forkEl.insertBefore(document.createTextNode(d.forkedFrom + ' '), forkEl.firstChild);
+    }
   }
 
   function setLang(lang){
@@ -518,6 +552,21 @@
 
   document.querySelectorAll('.langs button').forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+
+  document.querySelectorAll('.card-clickable').forEach(function(card){
+    var href = card.getAttribute('data-href');
+    function go(e){
+      if (e.target.closest('a')) return;
+      window.open(href, '_blank', 'noopener');
+    }
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', function(e){
+      if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('a')){
+        e.preventDefault();
+        window.open(href, '_blank', 'noopener');
+      }
+    });
   });
 
   setTheme(localStorage.getItem(THEME_KEY) || 'auto');
