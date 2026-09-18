@@ -37,6 +37,8 @@
     --shadow:0 24px 60px -24px rgba(0,0,0,.65);
     --rust:#dea584;
     --cpp:#e8597a;
+    --warn:#e0b04c;
+    --warn-soft:rgba(224,176,76,.13);
   }
   html[data-theme="light"]{
     --bg:#f6f2e8;
@@ -57,6 +59,8 @@
     --shadow:0 24px 50px -28px rgba(70,50,15,.3);
     --rust:#b85c2e;
     --cpp:#b8315f;
+    --warn:#a8790f;
+    --warn-soft:rgba(168,121,15,.12);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -160,15 +164,22 @@
     background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
     padding:22px; display:flex; flex-direction:column; gap:12px;
     transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    position:relative;
   }
   .card:hover{transform:translateY(-3px); border-color:var(--accent); box-shadow:var(--shadow);}
+  .card.is-archived:hover{border-color:var(--warn);}
   .card-clickable{cursor:pointer;}
   .card-top{display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
   .lang-tag{display:flex; align-items:center; gap:6px;}
   .lang-tag .ld{width:8px; height:8px; border-radius:50%;}
   .stars{display:flex; align-items:center; gap:4px;}
   .stars svg{width:12px; height:12px; fill:var(--text-faint);}
-  .card h3{margin:0; font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--text);}
+  .card h3{margin:0; font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .archived-badge{
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--warn); background:var(--warn-soft); border:1px solid var(--warn);
+    padding:2px 7px; border-radius:999px; font-weight:600;
+  }
   .card .fork-of{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin:-6px 0 0;}
   .card .fork-of a{color:var(--accent-2); text-decoration:underline; text-decoration-color:transparent; transition:text-decoration-color .2s ease;}
   .card .fork-of a:hover{text-decoration-color:var(--accent-2);}
@@ -257,12 +268,12 @@
       <p class="sec-sub" data-i18n="projSub"></p>
       <div class="grid-proj">
 
-<a class="card" href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener">
+<a class="card is-archived" href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener">
   <div class="card-top">
     <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
     <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 7</span>
   </div>
-  <h3>vulkan-cocoa-core</h3>
+  <h3>vulkan-cocoa-core <span class="archived-badge" data-i18n="archivedLabel"></span></h3>
   <p data-i18n="proj1"></p>
   <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
 </a>
@@ -270,7 +281,7 @@
 <a class="card" href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener">
   <div class="card-top">
     <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
   </div>
   <h3>FasdQuery</h3>
   <p data-i18n="proj2"></p>
@@ -280,7 +291,7 @@
 <a class="card" href="https://github.com/Fasdeq13/Linux-Process-Hacker" target="_blank" rel="noopener">
   <div class="card-top">
     <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
   </div>
   <h3>Linux-Process-Hacker</h3>
   <p data-i18n="proj3"></p>
@@ -290,17 +301,27 @@
 <a class="card" href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener">
   <div class="card-top">
     <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
   </div>
   <h3>FasdCommander</h3>
   <p data-i18n="proj4"></p>
   <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
 </a>
 
+<a class="card" href="https://github.com/Fasdeq13/fasdeq-studio" target="_blank" rel="noopener">
+  <div class="card-top">
+    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+  </div>
+  <h3>fasdeq-studio</h3>
+  <p data-i18n="proj6"></p>
+  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+</a>
+
 <div class="card card-clickable" data-href="https://github.com/Fasdeq13/MakuTweaker_linux" tabindex="0" role="link">
   <div class="card-top">
     <span class="lang-tag"><span class="ld" style="background:#8a8a8a"></span>C</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
+    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
   </div>
   <h3>MakuTweaker_linux</h3>
   <p class="fork-of" id="forkPrefix"><a href="https://github.com/MarkAdderly/MakuTweaker" target="_blank" rel="noopener">MarkAdderly/MakuTweaker</a></p>
@@ -361,11 +382,13 @@
       chipAge:"возраст", chipRole:"systems / low-level dev", chipStatus:"online",
       projTitle:"Репозитории", projSub:"Мои репозитории",
       connTitle:"Контакты", connSub:"",
-      proj1:"Графический мост, который переводит интерфейсы Apple Cocoa, CoreAnimation и Metal 3 напрямую в нативные вызовы Vulkan 1.3 на уровне ядра Darwin/XNU — самостоятельный бэкенд, заменяющий проприетарный Apple WindowServer на обычном ПК.",
+      archivedLabel:"archived",
+      proj1:"Графический мост, который переводит интерфейсы Apple Cocoa, CoreAnimation и Metal 3 напрямую в нативные вызовы Vulkan 1.3 на уровне ядра Darwin/XNU — самостоятельный бэкенд, заменяющий проприетарный Apple WindowServer на обычном ПК. Проект заархивирован.",
       proj2:"Молниеносный движок для поиска файлов в реальном времени с графическим интерфейсом для Linux. Написан на C++ и Qt6, оптимизирован под скорость и минимальный расход памяти.",
       proj3:"Process Hacker, собранный на Qt для ядра Linux — инструмент для мониторинга и управления процессами системы.",
       proj4:"Кроссплатформенный файловый менеджер в двух панелях, вдохновлённый классическими коммандерами.",
       proj5:"Исходный код MakuTweaker для Linux.",
+      proj6:"IDE, написанная на Rust и заточенная под низкоуровневую разработку.",
       forkedFrom:"форк от",
       cardLink:"открыть репозиторий",
       ghCap:"исходный код и проекты", tgCap:"написать мне напрямую", stCap:"игровой профиль",
@@ -376,11 +399,13 @@
       tagline:"Пишу на C++ і Rust те, що зазвичай живе глибоко всередині системи.",
       chipAge:"вік", chipRole:"systems / low-level dev", chipStatus:"online",
       projTitle:"Репозиторії", projSub:"Мої репозиторії",
-      proj1:"Графічний міст, який перетворює інтерфейси Apple Cocoa, CoreAnimation і Metal 3 безпосередньо у нативні виклики Vulkan 1.3 на рівні ядра Darwin/XNU — самостійний бекенд, що замінює пропрієтарний Apple WindowServer на звичайному ПК.",
+      archivedLabel:"archived",
+      proj1:"Графічний міст, який перетворює інтерфейси Apple Cocoa, CoreAnimation і Metal 3 безпосередньо у нативні виклики Vulkan 1.3 на рівні ядра Darwin/XNU — самостійний бекенд, що замінює пропрієтарний Apple WindowServer на звичайному ПК. Проєкт заархівовано.",
       proj2:"Блискавичний рушій для пошуку файлів у реальному часі з графічним інтерфейсом для Linux. Написаний на C++ і Qt6, оптимізований під швидкість і мінімальні витрати пам'яті.",
       proj3:"Process Hacker, зібраний на Qt для ядра Linux — інструмент для моніторингу та керування процесами системи.",
-      proj4:"Кросплатформний файловий менеджер у двох панелях, натхненний класичними коммандерами.",
+      proj4:"Кросплатформний файловий менеджер у двох панелях, натхнений класичними коммандерами.",
       proj5:"Вихідний код MakuTweaker для Linux.",
+      proj6:"IDE, написана на Rust і заточена під низькорівневу розробку.",
       forkedFrom:"форк від",
       cardLink:"відкрити репозиторій",
       connTitle:"Контакти", connSub:"",
@@ -393,11 +418,13 @@
       chipAge:"узрост", chipRole:"systems / low-level dev", chipStatus:"online",
       projTitle:"Рэпазіторыі", projSub:"Мае рэпазіторыі",
       connTitle:"Кантакты", connSub:"",
-      proj1:"Графічны мост, які пераўтварае інтэрфейсы Apple Cocoa, CoreAnimation і Metal 3 непасрэдна ў натыўныя выклікі Vulkan 1.3 на ўзроўні ядра Darwin/XNU — самастойны бэкенд, які замяняе прапрыетарны Apple WindowServer на звычайным ПК.",
+      archivedLabel:"archived",
+      proj1:"Графічны мост, які пераўтварае інтэрфейсы Apple Cocoa, CoreAnimation і Metal 3 непасрэдна ў натыўныя выклікі Vulkan 1.3 на ўзроўні ядра Darwin/XNU — самастойны бэкенд, які замяняе прапрыетарны Apple WindowServer на звычайным ПК. Праект заархіваваны.",
       proj2:"Маланкава хуткі рухавік для пошуку файлаў у рэальным часе з графічным інтэрфейсам для Linux. Напісаны на C++ і Qt6, аптымізаваны пад хуткасць і мінімальнае спажыванне памяці.",
       proj3:"Process Hacker, сабраны на Qt для ядра Linux — інструмент для маніторынгу і кіравання працэсамі сістэмы.",
       proj4:"Крос-платформавы файлавы менеджар у дзвюх панэлях, натхнёны класічнымі коммандерамі.",
       proj5:"Зыходны код MakuTweaker для Linux.",
+      proj6:"IDE, напісаная на Rust і заточаная пад нізкаўзроўневую распрацоўку.",
       forkedFrom:"форк ад",
       cardLink:"адкрыць рэпазіторый",
       ghCap:"зыходны код і праекты", tgCap:"напісаць мне напрамую", stCap:"гульнявы профіль",
@@ -408,12 +435,13 @@
       tagline:"I write the C++ and Rust that usually lives deep inside the system.",
       chipAge:"age", chipRole:"systems / low-level dev", chipStatus:"online",
       projTitle:"Repositories", projSub:"My repositories",
-      connTitle:"Contacts", connSub:"",
-      proj1:"A graphics bridge that translates Apple's Cocoa, CoreAnimation, and Metal 3 interfaces directly into native Vulkan 1.3 calls at the Darwin/XNU kernel level — a standalone backend that replaces Apple's proprietary WindowServer on regular PC hardware.",
+      archivedLabel:"archived",
+      proj1:"A graphics bridge that translates Apple's Cocoa, CoreAnimation, and Metal 3 interfaces directly into native Vulkan 1.3 calls at the Darwin/XNU kernel level — a standalone backend that replaces Apple's proprietary WindowServer on regular PC hardware. Project archived.",
       proj2:"A blazing-fast, real-time file search engine and GUI for Linux, written in C++ and Qt6. Optimized for speed and low memory footprint.",
       proj3:"Process Hacker built with Qt for the Linux kernel — a tool for monitoring and managing system processes.",
       proj4:"A cross-platform, dual-pane file manager inspired by classic file commanders.",
       proj5:"Source code of MakuTweaker for Linux.",
+      proj6:"An IDE written in Rust and designed for low-level development.",
       forkedFrom:"forked from",
       cardLink:"open repository",
       ghCap:"source code & projects", tgCap:"message me directly", stCap:"gaming profile",
