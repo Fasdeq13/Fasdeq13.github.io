@@ -1,609 +1,1096 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fasdeq13</title>
-<meta name="description" content="Fasdeq13 — systems & low-level developer. C++, Rust.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230a0d10'/%3E%3Ctext x='50' y='66' font-size='52' font-family='monospace' fill='%23f0a356' text-anchor='middle'%3E%3E_%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --font-mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    --font-disp:'Space Grotesk', system-ui, sans-serif;
-    --maxw:980px;
-    --r:14px;
-    --r-sm:8px;
-    --dur:.5s;
-  }
-  html[data-theme="dark"]{
-    --bg:#0a0d10;
-    --bg2:#0d1014;
-    --grid:rgba(255,255,255,.045);
-    --panel:#12161b;
-    --panel-2:#171c22;
-    --border:#242b32;
-    --border-soft:#1b2027;
-    --text:#eae6dc;
-    --text-dim:#8d949c;
-    --text-faint:#5d646c;
-    --accent:#f0a356;
-    --accent-soft:rgba(240,163,86,.13);
-    --accent-2:#5fb6ae;
-    --accent-2-soft:rgba(95,182,174,.13);
-    --on-accent:#0a0d10;
-    --shadow:0 24px 60px -24px rgba(0,0,0,.65);
-    --rust:#dea584;
-    --cpp:#e8597a;
-    --warn:#e0b04c;
-    --warn-soft:rgba(224,176,76,.13);
-  }
-  html[data-theme="light"]{
-    --bg:#f6f2e8;
-    --bg2:#f1ecdf;
-    --grid:rgba(30,25,15,.05);
-    --panel:#fffdf9;
-    --panel-2:#f1ebd9;
-    --border:#ddd2b8;
-    --border-soft:#e6dcc4;
-    --text:#1d2024;
-    --text-dim:#5e584a;
-    --text-faint:#8a8270;
-    --accent:#c06b1d;
-    --accent-soft:rgba(192,107,29,.12);
-    --accent-2:#1f7a73;
-    --accent-2-soft:rgba(31,122,115,.12);
-    --on-accent:#fff9f0;
-    --shadow:0 24px 50px -28px rgba(70,50,15,.3);
-    --rust:#b85c2e;
-    --cpp:#b8315f;
-    --warn:#a8790f;
-    --warn-soft:rgba(168,121,15,.12);
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:var(--font-disp);
-    -webkit-font-smoothing:antialiased;
-    line-height:1.5;
-    transition:background var(--dur) ease, color var(--dur) ease;
-    overflow-x:hidden;
-  }
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    background-image:
-      radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0);
-    background-size:28px 28px;
-    pointer-events:none;
-    z-index:0;
-    mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 40%, transparent 100%);
-  }
-  a{color:inherit; text-decoration:none;}
-  button{font-family:inherit; cursor:pointer;}
-  ::selection{background:var(--accent); color:var(--on-accent);}
-  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
-
-  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:1;}
-
-  header{
-    position:sticky; top:0; z-index:50;
-    background:color-mix(in srgb, var(--bg) 86%, transparent);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--border-soft);
-  }
-  .headbar{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 0;}
-  .logo{font-family:var(--font-mono); font-weight:600; font-size:14px; color:var(--text-dim); display:flex; align-items:center; gap:8px;}
-  .logo .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); animation:pulse 2.4s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
-  .controls{display:flex; align-items:center; gap:6px;}
-  .langs{display:flex; gap:2px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:3px;}
-  .langs button{
-    font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.04em;
-    background:none; border:none; color:var(--text-faint); padding:6px 9px; border-radius:6px;
-    transition:all .2s ease;
-  }
-  .langs button:hover{color:var(--text);}
-  .langs button.active{background:var(--accent); color:var(--on-accent);}
-  .theme-btn{
-    width:32px; height:32px; display:grid; place-items:center;
-    background:var(--panel); border:1px solid var(--border); border-radius:8px; color:var(--text-dim);
-    transition:all .2s ease;
-  }
-  .theme-btn:hover{color:var(--accent); border-color:var(--accent);}
-  .theme-btn svg{width:15px; height:15px;}
-
-  .hero{padding:64px 0 56px;}
-  .term{
-    background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
-    box-shadow:var(--shadow);
-    overflow:hidden;
-  }
-  .term-bar{
-    display:flex; align-items:center; gap:7px; padding:11px 16px;
-    border-bottom:1px solid var(--border-soft); background:var(--panel-2);
-  }
-  .term-bar span{width:10px; height:10px; border-radius:50%; background:var(--border);}
-  .term-bar .path{margin-left:8px; font-family:var(--font-mono); font-size:11px; color:var(--text-faint);}
-  .term-body{padding:22px 22px 26px; font-family:var(--font-mono); font-size:14px; color:var(--text-dim); min-height:230px;}
-  .term-body .ln{white-space:pre-wrap; word-break:break-word; opacity:0; min-height:1.6em;}
-  .term-body .ln.show{opacity:1;}
-  .term-body .ok{color:var(--accent-2);}
-  .cursor{display:inline-block; width:8px; height:16px; background:var(--accent); vertical-align:middle; animation:blink 1s step-end infinite; margin-left:2px;}
-  @keyframes blink{50%{opacity:0;}}
-
-  .hero-id{margin-top:30px; opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease;}
-  .hero-id.show{opacity:1; transform:translateY(0);}
-  .hero-name{font-family:var(--font-disp); font-weight:700; font-size:clamp(38px,7vw,64px); line-height:1; letter-spacing:-.02em; margin:0;}
-  .hero-name .px{color:var(--accent);}
-  .hero-tagline{margin:14px 0 0; font-size:clamp(15px,2.2vw,18px); color:var(--text-dim); max-width:560px;}
-  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px;}
-  .chip{
-    font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase;
-    border:1px solid var(--border); background:var(--panel); padding:6px 10px; border-radius:999px;
-    color:var(--text-faint); display:flex; align-items:center; gap:6px;
-  }
-  .chip b{color:var(--text); font-weight:600;}
-  .chip .lvdot{width:6px; height:6px; border-radius:50%; background:var(--accent-2);}
-
-  section{padding:64px 0;}
-  .eyebrow{font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.05em; margin:0 0 10px;}
-  .sec-title{font-family:var(--font-disp); font-size:clamp(26px,4vw,36px); font-weight:700; margin:0 0 8px; letter-spacing:-.01em;}
-  .sec-sub{color:var(--text-dim); margin:0 0 36px; max-width:560px; font-size:15px;}
-
-  .grid-proj{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
-  @media (max-width:900px) and (min-width:761px){
-    .grid-proj{grid-template-columns:1fr 1fr;}
-  }
-  .card{
-    background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
-    padding:22px; display:flex; flex-direction:column; gap:12px;
-    transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-    position:relative;
-  }
-  .card:hover{transform:translateY(-3px); border-color:var(--accent); box-shadow:var(--shadow);}
-  .card.is-archived:hover{border-color:var(--warn);}
-  .card-clickable{cursor:pointer;}
-  .card-top{display:flex; align-items:center; justify-content:space-between; font-family:var(--font-mono); font-size:12px; color:var(--text-faint);}
-  .lang-tag{display:flex; align-items:center; gap:6px;}
-  .lang-tag .ld{width:8px; height:8px; border-radius:50%;}
-  .stars{display:flex; align-items:center; gap:4px;}
-  .stars svg{width:12px; height:12px; fill:var(--text-faint);}
-  .card h3{margin:0; font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
-  .archived-badge{
-    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
-    color:var(--warn); background:var(--warn-soft); border:1px solid var(--warn);
-    padding:2px 7px; border-radius:999px; font-weight:600;
-  }
-  .card .fork-of{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin:-6px 0 0;}
-  .card .fork-of a{color:var(--accent-2); text-decoration:underline; text-decoration-color:transparent; transition:text-decoration-color .2s ease;}
-  .card .fork-of a:hover{text-decoration-color:var(--accent-2);}
-  .card p{margin:0; color:var(--text-dim); font-size:13.5px; line-height:1.55; flex-grow:1;}
-  .card .go{font-family:var(--font-mono); font-size:12px; color:var(--accent); display:flex; align-items:center; gap:6px;}
-  .card .go svg{width:12px; height:12px; transition:transform .2s ease;}
-  .card:hover .go svg{transform:translate(3px,-3px);}
-
-  .grid-connect{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
-  .conn-card{
-    background:var(--panel); border:1px solid var(--border); border-radius:var(--r);
-    padding:24px; display:flex; flex-direction:column; gap:14px;
-    transition:transform .25s ease, border-color .25s ease;
-  }
-  .conn-card:hover{transform:translateY(-3px); border-color:var(--accent-2);}
-  .badge{
-    width:42px; height:42px; border-radius:10px; display:grid; place-items:center;
-    font-family:var(--font-mono); font-size:11px; font-weight:700; letter-spacing:.02em;
-    background:var(--accent-2-soft); color:var(--accent-2); border:1px solid var(--border);
-  }
-  .conn-card h3{margin:0; font-size:17px; font-weight:700;}
-  .conn-card p{margin:0; color:var(--text-dim); font-size:13.5px;}
-  .conn-card .url{font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); margin-top:auto;}
-
-  footer{padding:34px 0 50px; border-top:1px solid var(--border-soft);}
-  footer .wrap{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;}
-  footer p{margin:0; font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint);}
-
-  @media (max-width:760px){
-    .grid-proj{grid-template-columns:1fr;}
-    .grid-connect{grid-template-columns:1fr;}
-    .hero{padding:40px 0 36px;}
-    section{padding:46px 0;}
-    .term-body{font-size:12.5px; padding:18px;}
-    .headbar{padding:10px 0;}
-  }
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
-  }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="wrap headbar">
-    <div class="logo"><span class="dot"></span>fasdeq13@web:~$</div>
-    <div class="controls">
-      <div class="langs" role="group" aria-label="language">
-        <button data-lang="ru" title="Русский">RU</button>
-        <button data-lang="ua" title="Українська">UA</button>
-        <button data-lang="by" title="Беларуская">BY</button>
-        <button data-lang="en" title="English">EN</button>
-      </div>
-      <button class="theme-btn" id="themeBtn" aria-label="theme"></button>
-    </div>
-  </div>
-</header>
-
-<main>
-  <section class="hero">
-    <div class="wrap">
-      <div class="term">
-        <div class="term-bar">
-          <span style="background:#e8597a"></span><span style="background:#dea584"></span><span style="background:#5fb6ae"></span>
-          <span class="path">~/fasdeq13/profile.sh</span>
-        </div>
-        <div class="term-body" id="termBody"></div>
-      </div>
-
-      <div class="hero-id" id="heroId">
-        <h1 class="hero-name">Fasdeq<span class="px">13</span></h1>
-        <p class="hero-tagline" data-i18n="tagline"></p>
-        <div class="chips">
-          <span class="chip"><span class="lvdot"></span><span data-i18n="chipAge"></span>&nbsp;<b>14</b></span>
-          <span class="chip"><span class="lvdot"></span><span data-i18n="chipRole"></span></span>
-          <span class="chip"><span class="lvdot"></span><span data-i18n="chipStatus"></span></span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects">
-    <div class="wrap">
-      <p class="eyebrow">./projects</p>
-      <h2 class="sec-title" data-i18n="projTitle"></h2>
-      <p class="sec-sub" data-i18n="projSub"></p>
-      <div class="grid-proj">
-
-<a class="card is-archived" href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 7</span>
-  </div>
-  <h3>vulkan-cocoa-core <span class="archived-badge" data-i18n="archivedLabel"></span></h3>
-  <p data-i18n="proj1"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<a class="card" href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
-  </div>
-  <h3>FasdQuery</h3>
-  <p data-i18n="proj2"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<a class="card" href="https://github.com/Fasdeq13/Linux-Process-Hacker" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--cpp)"></span>C++</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
-  </div>
-  <h3>Linux-Process-Hacker</h3>
-  <p data-i18n="proj3"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<a class="card" href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
-  </div>
-  <h3>FasdCommander</h3>
-  <p data-i18n="proj4"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<a class="card" href="https://github.com/Fasdeq13/fasdeq-studio" target="_blank" rel="noopener">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:var(--rust)"></span>Rust</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 1</span>
-  </div>
-  <h3>fasdeq-studio</h3>
-  <p data-i18n="proj6"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</a>
-
-<div class="card card-clickable" data-href="https://github.com/Fasdeq13/MakuTweaker_linux" tabindex="0" role="link">
-  <div class="card-top">
-    <span class="lang-tag"><span class="ld" style="background:#8a8a8a"></span>C</span>
-    <span class="stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 7 1-5 4.9 1.2 6.9-6.3-3.3-6.3 3.3 1.2-6.9-5-4.9 7-1z"/></svg> 2</span>
-  </div>
-  <h3>MakuTweaker_linux</h3>
-  <p class="fork-of" id="forkPrefix"><a href="https://github.com/MarkAdderly/MakuTweaker" target="_blank" rel="noopener">MarkAdderly/MakuTweaker</a></p>
-  <p data-i18n="proj5"></p>
-  <span class="go" data-i18n="cardLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="connect">
-    <div class="wrap">
-      <p class="eyebrow">./contacts</p>
-      <h2 class="sec-title" data-i18n="connTitle"></h2>
-      <p class="sec-sub" data-i18n="connSub"></p>
-      <div class="grid-connect">
-
-        <a class="conn-card" href="https://github.com/Fasdeq13" target="_blank" rel="noopener">
-          <div class="badge">GH</div>
-          <h3>GitHub</h3>
-          <p data-i18n="ghCap"></p>
-          <span class="url">github.com/Fasdeq13</span>
-        </a>
-
-        <a class="conn-card" href="https://t.me/raZOVry" target="_blank" rel="noopener">
-          <div class="badge">TG</div>
-          <h3>Telegram</h3>
-          <p data-i18n="tgCap"></p>
-          <span class="url">t.me/raZOVry</span>
-        </a>
-
-        <a class="conn-card" href="https://steamcommunity.com/id/Fasdeq" target="_blank" rel="noopener">
-          <div class="badge">ST</div>
-          <h3>Steam</h3>
-          <p data-i18n="stCap"></p>
-          <span class="url">steamcommunity.com/id/Fasdeq</span>
-        </a>
-
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <p data-i18n="footer"></p>
-    <p>fasdeq13.sys · build 2026</p>
-  </div>
-</footer>
-
-<script>
-(function(){
-  "use strict";
-
-  var i18n = {
-    ru:{
-      tagline:"Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.",
-      chipAge:"возраст", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Репозитории", projSub:"Мои репозитории",
-      connTitle:"Контакты", connSub:"",
-      archivedLabel:"archived",
-      proj1:"Графический мост, который переводит интерфейсы Apple Cocoa, CoreAnimation и Metal 3 напрямую в нативные вызовы Vulkan 1.3 на уровне ядра Darwin/XNU — самостоятельный бэкенд, заменяющий проприетарный Apple WindowServer на обычном ПК. Проект заархивирован.",
-      proj2:"Молниеносный движок для поиска файлов в реальном времени с графическим интерфейсом для Linux. Написан на C++ и Qt6, оптимизирован под скорость и минимальный расход памяти.",
-      proj3:"Process Hacker, собранный на Qt для ядра Linux — инструмент для мониторинга и управления процессами системы.",
-      proj4:"Кроссплатформенный файловый менеджер в двух панелях, вдохновлённый классическими коммандерами.",
-      proj5:"Исходный код MakuTweaker для Linux.",
-      proj6:"IDE, написанная на Rust и заточенная под низкоуровневую разработку.",
-      forkedFrom:"форк от",
-      cardLink:"открыть репозиторий",
-      ghCap:"исходный код и проекты", tgCap:"написать мне напрямую", stCap:"игровой профиль",
-      footer:"",
-      boot:["> boot fasdeq13.sys","[ ok ] загрузка модулей ядра","[ ok ] монтирование /home/projects","[ ok ] инициализация profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
-    },
-    ua:{
-      tagline:"Пишу на C++ і Rust те, що зазвичай живе глибоко всередині системи.",
-      chipAge:"вік", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Репозиторії", projSub:"Мої репозиторії",
-      archivedLabel:"archived",
-      proj1:"Графічний міст, який перетворює інтерфейси Apple Cocoa, CoreAnimation і Metal 3 безпосередньо у нативні виклики Vulkan 1.3 на рівні ядра Darwin/XNU — самостійний бекенд, що замінює пропрієтарний Apple WindowServer на звичайному ПК. Проєкт заархівовано.",
-      proj2:"Блискавичний рушій для пошуку файлів у реальному часі з графічним інтерфейсом для Linux. Написаний на C++ і Qt6, оптимізований під швидкість і мінімальні витрати пам'яті.",
-      proj3:"Process Hacker, зібраний на Qt для ядра Linux — інструмент для моніторингу та керування процесами системи.",
-      proj4:"Кросплатформний файловий менеджер у двох панелях, натхнений класичними коммандерами.",
-      proj5:"Вихідний код MakuTweaker для Linux.",
-      proj6:"IDE, написана на Rust і заточена під низькорівневу розробку.",
-      forkedFrom:"форк від",
-      cardLink:"відкрити репозиторій",
-      connTitle:"Контакти", connSub:"",
-      ghCap:"вихідний код і проєкти", tgCap:"написати мені напряму", stCap:"ігровий профіль",
-      footer:"",
-      boot:["> boot fasdeq13.sys","[ ok ] завантаження модулів ядра","[ ok ] монтування /home/projects","[ ok ] ініціалізація profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
-    },
-    by:{
-      tagline:"Пішу на C++ і Rust тое, што звычайна жыве глыбока ўнутры сістэмы.",
-      chipAge:"узрост", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Рэпазіторыі", projSub:"Мае рэпазіторыі",
-      connTitle:"Кантакты", connSub:"",
-      archivedLabel:"archived",
-      proj1:"Графічны мост, які пераўтварае інтэрфейсы Apple Cocoa, CoreAnimation і Metal 3 непасрэдна ў натыўныя выклікі Vulkan 1.3 на ўзроўні ядра Darwin/XNU — самастойны бэкенд, які замяняе прапрыетарны Apple WindowServer на звычайным ПК. Праект заархіваваны.",
-      proj2:"Маланкава хуткі рухавік для пошуку файлаў у рэальным часе з графічным інтэрфейсам для Linux. Напісаны на C++ і Qt6, аптымізаваны пад хуткасць і мінімальнае спажыванне памяці.",
-      proj3:"Process Hacker, сабраны на Qt для ядра Linux — інструмент для маніторынгу і кіравання працэсамі сістэмы.",
-      proj4:"Крос-платформавы файлавы менеджар у дзвюх панэлях, натхнёны класічнымі коммандерамі.",
-      proj5:"Зыходны код MakuTweaker для Linux.",
-      proj6:"IDE, напісаная на Rust і заточаная пад нізкаўзроўневую распрацоўку.",
-      forkedFrom:"форк ад",
-      cardLink:"адкрыць рэпазіторый",
-      ghCap:"зыходны код і праекты", tgCap:"напісаць мне напрамую", stCap:"гульнявы профіль",
-      footer:"",
-      boot:["> boot fasdeq13.sys","[ ok ] загрузка модуляў ядра","[ ok ] мантаванне /home/projects","[ ok ] ініцыялізацыя profile.json","> whoami","Fasdeq13 — systems / low-level developer","статус: online"]
-    },
-    en:{
-      tagline:"I write the C++ and Rust that usually lives deep inside the system.",
-      chipAge:"age", chipRole:"systems / low-level dev", chipStatus:"online",
-      projTitle:"Repositories", projSub:"My repositories",
-      archivedLabel:"archived",
-      proj1:"A graphics bridge that translates Apple's Cocoa, CoreAnimation, and Metal 3 interfaces directly into native Vulkan 1.3 calls at the Darwin/XNU kernel level — a standalone backend that replaces Apple's proprietary WindowServer on regular PC hardware. Project archived.",
-      proj2:"A blazing-fast, real-time file search engine and GUI for Linux, written in C++ and Qt6. Optimized for speed and low memory footprint.",
-      proj3:"Process Hacker built with Qt for the Linux kernel — a tool for monitoring and managing system processes.",
-      proj4:"A cross-platform, dual-pane file manager inspired by classic file commanders.",
-      proj5:"Source code of MakuTweaker for Linux.",
-      proj6:"An IDE written in Rust and designed for low-level development.",
-      forkedFrom:"forked from",
-      cardLink:"open repository",
-      ghCap:"source code & projects", tgCap:"message me directly", stCap:"gaming profile",
-      footer:"",
-      boot:["> boot fasdeq13.sys","[ ok ] loading kernel modules","[ ok ] mounting /home/projects","[ ok ] initializing profile.json","> whoami","Fasdeq13 — systems / low-level developer","status: online"]
-    }
-  };
-
-  var root = document.documentElement;
-  var termBody = document.getElementById('termBody');
-  var heroId = document.getElementById('heroId');
-  var bootDone = false;
-  var currentLang = 'ru';
-
-  function detectLang(){
-    var saved = localStorage.getItem('f13-lang');
-    if (saved && i18n[saved]) return saved;
-    var nav = (navigator.language || 'ru').toLowerCase();
-    if (nav.indexOf('uk') === 0) return 'ua';
-    if (nav.indexOf('be') === 0) return 'by';
-    if (nav.indexOf('en') === 0) return 'en';
-    return 'ru';
-  }
-
-  function applyStaticText(lang){
-    var d = i18n[lang];
-    document.querySelectorAll('[data-i18n]').forEach(function(el){
-      var key = el.getAttribute('data-i18n');
-      if (key === 'cardLink') return;
-      if (d[key] !== undefined) el.textContent = d[key];
-    });
-    document.querySelectorAll('[data-i18n="cardLink"]').forEach(function(el){
-      if (el.firstChild && el.firstChild.nodeType === 3) el.firstChild.remove();
-      el.insertBefore(document.createTextNode(d.cardLink + ' '), el.firstChild);
-    });
-    var forkEl = document.getElementById('forkPrefix');
-    if (forkEl && d.forkedFrom !== undefined){
-      if (forkEl.firstChild && forkEl.firstChild.nodeType === 3) forkEl.firstChild.remove();
-      forkEl.insertBefore(document.createTextNode(d.forkedFrom + ' '), forkEl.firstChild);
-    }
-  }
-
-  function setLang(lang){
-    if (!i18n[lang]) lang = 'ru';
-    currentLang = lang;
-    localStorage.setItem('f13-lang', lang);
-    var map = {ru:'ru', ua:'uk', by:'be', en:'en'};
-    root.setAttribute('lang', map[lang] || 'ru');
-    document.querySelectorAll('.langs button').forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
-    });
-    applyStaticText(lang);
-    if (bootDone){
-      renderBootStatic(lang);
-    }
-  }
-
-  function renderBootStatic(lang){
-    var lines = i18n[lang].boot;
-    termBody.innerHTML = lines.map(function(l, i){
-      var safe = l.replace(/\[ ok \]/, '<span class="ok">[ ok ]</span>');
-      return '<div class="ln show">' + safe + (i === lines.length-1 ? '<span class="cursor"></span>' : '') + '</div>';
-    }).join('');
-  }
-
-  function runBoot(lang){
-    var lines = i18n[lang].boot;
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced){
-      renderBootStatic(lang);
-      bootDone = true;
-      heroId.classList.add('show');
-      return;
-    }
-    var container = termBody;
-    container.innerHTML = '';
-    var i = 0;
-    function nextLine(){
-      if (i >= lines.length){
-        bootDone = true;
-        heroId.classList.add('show');
-        return;
-      }
-      var raw = lines[i];
-      var div = document.createElement('div');
-      div.className = 'ln show';
-      container.appendChild(div);
-      var j = 0;
-      var isOk = raw.indexOf('[ ok ]') === 0;
-      var typed = '';
-      var speed = 14;
-      (function type(){
-        if (j <= raw.length){
-          typed = raw.slice(0, j);
-          div.innerHTML = isOk ? typed.replace('[ ok ]', '<span class="ok">[ ok ]</span>') : typed;
-          j++;
-          setTimeout(type, speed);
-        } else {
-          if (i === lines.length - 1){
-            div.innerHTML += '<span class="cursor"></span>';
-          }
-          i++;
-          setTimeout(nextLine, isOk ? 140 : 220);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>fasdeq@fasdeqos:~$</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --surface-bg: #111311;
+            --surface-container-low: #171a17;
+            --surface-container: #1d211d;
+            --surface-container-high: #262b26;
+            --outline-variant: #384038;
+            --primary: #ffb77c;
+            --primary-container: #5c3310;
+            --on-primary: #3b1c00;
+            --on-primary-container: #ffdcc2;
+            --secondary-container: #2c382e;
+            --on-secondary-container: #cfe9d3;
+            --tertiary-container: #1e3b3f;
+            --on-tertiary-container: #bcebf0;
         }
-      })();
-    }
-    nextLine();
-  }
 
-  var THEME_KEY = 'f13-theme';
-  var sunIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
-  var moonIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>';
-  var autoIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M7 21h10M12 18v3"/></svg>';
-  var themeBtn = document.getElementById('themeBtn');
-  var mql = window.matchMedia('(prefers-color-scheme: dark)');
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  function resolveTheme(mode){
-    if (mode === 'auto') return mql.matches ? 'dark' : 'light';
-    return mode;
-  }
-  function setTheme(mode){
-    localStorage.setItem(THEME_KEY, mode);
-    root.setAttribute('data-theme', resolveTheme(mode));
-    themeBtn.innerHTML = mode === 'auto' ? autoIcon : (mode === 'dark' ? moonIcon : sunIcon);
-    themeBtn.setAttribute('data-mode', mode);
-  }
-  themeBtn.addEventListener('click', function(){
-    var cur = localStorage.getItem(THEME_KEY) || 'auto';
-    var next = cur === 'auto' ? 'dark' : (cur === 'dark' ? 'light' : 'auto');
-    setTheme(next);
-  });
-  mql.addEventListener('change', function(){
-    var cur = localStorage.getItem(THEME_KEY) || 'auto';
-    if (cur === 'auto') setTheme('auto');
-  });
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--surface-bg);
+            color: #e4e7e3;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
 
-  document.querySelectorAll('.langs button').forEach(function(b){
-    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
-  });
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
 
-  document.querySelectorAll('.card-clickable').forEach(function(card){
-    var href = card.getAttribute('data-href');
-    function go(e){
-      if (e.target.closest('a')) return;
-      window.open(href, '_blank', 'noopener');
-    }
-    card.addEventListener('click', go);
-    card.addEventListener('keydown', function(e){
-      if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('a')){
-        e.preventDefault();
-        window.open(href, '_blank', 'noopener');
-      }
-    });
-  });
+        .hero-title {
+            font-size: clamp(2.15rem, 8vw, 3.25rem);
+            line-height: 1.08;
+        }
 
-  setTheme(localStorage.getItem(THEME_KEY) || 'auto');
-  var lang = detectLang();
-  setLang(lang);
-  runBoot(lang);
+        .section-title {
+            font-size: clamp(1.5rem, 5vw, 1.95rem);
+            line-height: 1.2;
+        }
 
-})();
-</script>
+        .m3-card {
+            background-color: var(--surface-container);
+            border: 1px solid rgba(255, 255, 255, 0.065);
+            border-radius: 28px;
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+            transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1), background-color 0.28s cubic-bezier(0.2, 0, 0, 1), border-color 0.28s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1);
+        }
 
+        @media (min-width: 640px) {
+            .m3-card {
+                border-radius: 30px;
+            }
+        }
+
+        .m3-card:hover {
+            background-color: var(--surface-container-high);
+            border-color: rgba(255, 183, 124, 0.34);
+            transform: translateY(-3px);
+            box-shadow: inset 0 1px 0 0 rgba(255, 183, 124, 0.14), 0 20px 38px -14px rgba(0, 0, 0, 0.6);
+        }
+
+        .m3-card:active {
+            transform: scale(0.992);
+        }
+
+        .m3-featured {
+            background: linear-gradient(145deg, #26221b 0%, #1b221d 100%);
+            border: 1px solid rgba(255, 183, 124, 0.36);
+            border-radius: 30px;
+            box-shadow: inset 0 1px 0 0 rgba(255, 183, 124, 0.16), 0 18px 40px -18px rgba(0, 0, 0, 0.65);
+            transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1), border-color 0.28s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        @media (min-width: 640px) {
+            .m3-featured {
+                border-radius: 32px;
+            }
+        }
+
+        .m3-featured:hover {
+            border-color: rgba(255, 183, 124, 0.72);
+            transform: translateY(-3px);
+            box-shadow: inset 0 1px 0 0 rgba(255, 183, 124, 0.24), 0 24px 46px -16px rgba(255, 183, 124, 0.18);
+        }
+
+        .m3-pill {
+            border-radius: 9999px;
+            transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .m3-pill:active {
+            transform: scale(0.96);
+        }
+
+        .scallop-badge {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 640px) {
+            .scallop-badge {
+                width: 54px;
+                height: 54px;
+            }
+        }
+
+        .scallop-badge svg.shape {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28));
+            transition: transform 0.5s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .scallop-badge svg.glyph {
+            transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .m3-card:hover .scallop-badge svg.shape,
+        .m3-featured:hover .scallop-badge svg.shape {
+            transform: rotate(30deg) scale(1.06);
+        }
+
+        .m3-card:hover .scallop-badge svg.glyph,
+        .m3-featured:hover .scallop-badge svg.glyph {
+            transform: scale(1.08);
+        }
+
+        .cursor-blink {
+            animation: blink 1.1s steps(2, start) infinite;
+        }
+
+        @keyframes blink {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        .blob-float {
+            animation: floatSlow 14s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatSlow {
+            0% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
+            100% {
+                transform: translate(-10px, 8px) rotate(6deg) scale(1.04);
+            }
+        }
+
+        .ambient-blob-1 {
+            animation: driftOne 22s ease-in-out infinite alternate;
+        }
+
+        .ambient-blob-2 {
+            animation: driftTwo 26s ease-in-out infinite alternate;
+        }
+
+        .ambient-blob-3 {
+            animation: spinSlow 48s linear infinite;
+        }
+
+        .avatar-halo-spin {
+            animation: haloPulseSpin 16s ease-in-out infinite alternate;
+            transform-origin: 50px 50px;
+        }
+
+        @keyframes driftOne {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translate3d(36px, -24px, 0) rotate(14deg) scale(1.08);
+            }
+            100% {
+                transform: translate3d(-20px, 28px, 0) rotate(-10deg) scale(0.96);
+            }
+        }
+
+        @keyframes driftTwo {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translate3d(-32px, 22px, 0) rotate(-16deg) scale(1.1);
+            }
+            100% {
+                transform: translate3d(24px, -26px, 0) rotate(12deg) scale(0.95);
+            }
+        }
+
+        @keyframes spinSlow {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes haloPulseSpin {
+            0% {
+                transform: translate(3px, -2px) rotate(-10deg) scale(1.03);
+            }
+            50% {
+                transform: translate(4px, 2px) rotate(14deg) scale(1.07);
+            }
+            100% {
+                transform: translate(2px, -3px) rotate(28deg) scale(1.02);
+            }
+        }
+
+        .bg-dot-matrix {
+            background-image: radial-gradient(rgba(255, 183, 124, 0.09) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        #pointer-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 360px;
+            height: 360px;
+            border-radius: 9999px;
+            background: radial-gradient(circle, rgba(255, 183, 124, 0.15) 0%, rgba(27, 77, 74, 0.09) 42%, rgba(17, 19, 17, 0) 72%);
+            pointer-events: none;
+            will-change: transform, opacity;
+            opacity: 0;
+            transition: opacity 0.45s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111311;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2c332c;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative selection:bg-[#ffb77c] selection:text-[#3b1c00]">
+
+    <div id="m3-ambient-canvas" class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+        <div class="absolute inset-0 bg-dot-matrix opacity-75"></div>
+        <div id="pointer-glow"></div>
+        <div id="parallax-layer-1" class="absolute -top-28 -left-24 w-[340px] h-[340px] sm:w-[520px] sm:h-[520px] will-change-transform">
+            <svg class="ambient-blob-1 w-full h-full opacity-30 blur-2xl" viewBox="0 0 200 200" fill="none">
+                <path d="M48.5,-62.3C62.1,-53.4,71.8,-37.9,76.4,-21.2C81,-4.5,80.5,13.4,73.1,28.1C65.7,42.8,51.4,54.3,35.8,62.3C20.2,70.3,3.3,74.8,-13.7,73.1C-30.7,71.4,-47.8,63.5,-59.8,50.6C-71.8,37.7,-78.7,19.8,-78.2,2.2C-77.7,-15.4,-69.8,-32.7,-57.5,-41.8C-45.2,-50.9,-28.5,-51.8,-13.4,-57.5C1.7,-63.2,15.2,-73.7,29.6,-73.3C44,-72.9,34.9,-71.2,48.5,-62.3Z" transform="translate(100 100)" fill="#6e3528"/>
+            </svg>
+        </div>
+        <div id="parallax-layer-2" class="absolute top-1/3 -right-24 w-[360px] h-[360px] sm:w-[560px] sm:h-[560px] will-change-transform">
+            <svg class="ambient-blob-2 w-full h-full opacity-25 blur-2xl" viewBox="0 0 200 200" fill="none">
+                <path d="M41.3,-49.6C53.6,-39.5,63.7,-26.5,67.3,-11.7C70.9,3.1,68,19.7,59.3,32.7C50.6,45.7,36.1,55.1,20.3,60.3C4.5,65.5,-12.6,66.5,-27.4,60.6C-42.2,54.7,-54.7,41.9,-61.2,26.8C-67.7,11.7,-68.2,-5.7,-61.9,-20.2C-55.6,-34.7,-42.5,-46.3,-28.6,-55.8C-14.7,-65.3,0,-72.7,13.8,-70.7C27.6,-68.7,29,-59.7,41.3,-49.6Z" transform="translate(100 100)" fill="#1b4d4a"/>
+            </svg>
+        </div>
+        <div id="parallax-layer-3" class="absolute -bottom-28 left-1/6 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] will-change-transform">
+            <svg class="ambient-blob-1 w-full h-full opacity-20 blur-3xl" viewBox="0 0 200 200" fill="none">
+                <path d="M44.7,-56.4C57.6,-46.8,67.5,-32.5,71.4,-16.8C75.3,-1.1,73.2,16,64.8,29.6C56.4,43.2,41.7,53.3,25.8,59.6C9.9,65.9,-7.2,68.4,-23.1,63.8C-39,59.2,-53.7,47.5,-62.3,32.6C-70.9,17.7,-73.4,-0.4,-68.3,-16.4C-63.2,-32.4,-50.5,-46.3,-36.2,-55.6C-21.9,-64.9,-6,-69.6,8.7,-69.9C23.4,-70.2,31.8,-66,44.7,-56.4Z" transform="translate(100 100)" fill="#5c3310"/>
+            </svg>
+        </div>
+        <svg class="ambient-blob-3 absolute top-24 right-6 sm:right-12 w-24 h-24 sm:w-36 sm:h-36 opacity-[0.06]" viewBox="0 0 100 100" fill="none">
+            <use href="#m3-scallop-100" fill="#ffb77c"/>
+        </svg>
+        <svg class="ambient-blob-3 absolute bottom-24 left-4 sm:left-10 w-28 h-28 sm:w-44 sm:h-44 opacity-[0.05]" viewBox="0 0 100 100" fill="none">
+            <use href="#m3-scallop-100" fill="#81c995"/>
+        </svg>
+    </div>
+
+    <svg width="0" height="0" class="hidden" aria-hidden="true">
+        <defs>
+            <path id="m3-scallop-100" d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z"/>
+        </defs>
+    </svg>
+
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#111311]/85 border-b border-white/[0.06] pt-[env(safe-area-inset-top)]">
+        <div class="max-w-4xl mx-auto px-3.5 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+            <div class="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#1d211d] border border-white/[0.08] shadow-inner min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#ffb77c] animate-pulse flex-shrink-0"></span>
+                <svg class="w-3.5 h-3.5 text-[#ffb77c]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 17 10 11 4 5"/>
+                    <line x1="12" y1="19" x2="20" y2="19"/>
+                </svg>
+                <span class="font-mono text-xs sm:text-sm font-medium text-[#ffb77c] truncate">fasdeq@fasdeqos:~$</span>
+            </div>
+
+            <div class="inline-flex items-center gap-1 p-1 rounded-full bg-[#1d211d] border border-white/[0.08] flex-shrink-0" role="group" aria-label="Language switcher">
+                <span class="pl-2 pr-0.5 text-[#8f998f] hidden sm:inline-flex items-center">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                </span>
+                <button type="button" id="lang-ru" onclick="setLanguage('ru')" class="m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-bold bg-[#ffb77c] text-[#3b1c00]">RU</button>
+                <button type="button" id="lang-en" onclick="setLanguage('en')" class="m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-semibold text-[#9aa39a] hover:text-white">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-4xl mx-auto px-3.5 sm:px-6 py-6 sm:py-12 space-y-12 sm:space-y-16">
+
+        <section class="space-y-4 sm:space-y-6">
+            <div class="rounded-[26px] sm:rounded-[30px] bg-[#171a17] border border-white/[0.08] overflow-hidden shadow-2xl">
+                <div class="px-4 sm:px-5 py-3 bg-[#1d211d] border-b border-white/[0.06] flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ff6b6b]/85 flex-shrink-0"></span>
+                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ffd166]/85 flex-shrink-0"></span>
+                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#6bcb77]/85 flex-shrink-0"></span>
+                        <svg class="ml-1.5 w-3.5 h-3.5 text-[#ffb77c]/80 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                            <polyline points="13 2 13 9 20 9"/>
+                        </svg>
+                        <span class="font-mono text-[11px] sm:text-xs text-[#8f998f] truncate">/Users/fasdeq13/profile.sh</span>
+                    </div>
+                    <span class="inline-flex items-center gap-1 font-mono text-[11px] text-[#8f998f] bg-[#252a25] px-2 py-0.5 rounded-full flex-shrink-0">
+                        <svg class="w-3 h-3 text-[#ffb77c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 17 10 11 4 5"/>
+                            <line x1="12" y1="19" x2="20" y2="19"/>
+                        </svg>
+                        zsh
+                    </span>
+                </div>
+                <div class="p-4 sm:p-6 font-mono text-[11px] sm:text-sm space-y-2 leading-relaxed overflow-x-auto">
+                    <div class="text-[#ffb77c] whitespace-nowrap flex items-center gap-2">
+                        <span>&gt; boot fasdeq13.sys</span>
+                    </div>
+                    <div class="text-[#81c995] flex items-center gap-2">
+                        <span class="whitespace-nowrap">[ ok ]</span>
+                        <svg class="w-3.5 h-3.5 text-[#81c995]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <rect x="9" y="9" width="6" height="6"/>
+                            <line x1="9" y1="1" x2="9" y2="4"/>
+                            <line x1="15" y1="1" x2="15" y2="4"/>
+                            <line x1="9" y1="20" x2="9" y2="23"/>
+                            <line x1="15" y1="20" x2="15" y2="23"/>
+                            <line x1="20" y1="9" x2="23" y2="9"/>
+                            <line x1="20" y1="14" x2="23" y2="14"/>
+                            <line x1="1" y1="9" x2="4" y2="9"/>
+                            <line x1="1" y1="14" x2="4" y2="14"/>
+                        </svg>
+                        <span class="text-[#d6dbd6]" data-i18n="boot1">загрузка модулей ядра</span>
+                    </div>
+                    <div class="text-[#81c995] flex items-center gap-2">
+                        <span class="whitespace-nowrap">[ ok ]</span>
+                        <svg class="w-3.5 h-3.5 text-[#81c995]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span class="text-[#d6dbd6]" data-i18n="boot2">монтирование /Users/projects</span>
+                    </div>
+                    <div class="text-[#81c995] flex items-center gap-2">
+                        <span class="whitespace-nowrap">[ ok ]</span>
+                        <svg class="w-3.5 h-3.5 text-[#81c995]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                        <span class="text-[#d6dbd6]" data-i18n="boot3">инициализация profile.json</span>
+                    </div>
+                    <div class="text-[#ffb77c] pt-1 whitespace-nowrap">&gt; whoami</div>
+                    <div class="text-white font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span>Fasdeq13 — systems / low-level dev</span>
+                    </div>
+                    <div class="flex items-center gap-2 pt-0.5">
+                        <span class="text-[#9aa39a]" data-i18n="statusLabel">статус:</span>
+                        <span class="text-[#81c995] font-semibold">online</span>
+                        <span class="inline-block w-2 h-3.5 sm:h-4 bg-[#ffb77c] cursor-blink"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative rounded-[28px] sm:rounded-[32px] bg-[#1a1f1a] border border-white/[0.08] p-5 sm:p-9 overflow-hidden shadow-xl">
+                <svg class="blob-float pointer-events-none absolute -right-12 -top-12 w-56 h-56 sm:w-72 sm:h-72 opacity-55" viewBox="0 0 200 200" fill="none">
+                    <path d="M48.5,-62.3C62.1,-53.4,71.8,-37.9,76.4,-21.2C81,-4.5,80.5,13.4,73.1,28.1C65.7,42.8,51.4,54.3,35.8,62.3C20.2,70.3,3.3,74.8,-13.7,73.1C-30.7,71.4,-47.8,63.5,-59.8,50.6C-71.8,37.7,-78.7,19.8,-78.2,2.2C-77.7,-15.4,-69.8,-32.7,-57.5,-41.8C-45.2,-50.9,-28.5,-51.8,-13.4,-57.5C1.7,-63.2,15.2,-73.7,29.6,-73.3C44,-72.9,34.9,-71.2,48.5,-62.3Z" transform="translate(105 95)" fill="#6e3528"/>
+                </svg>
+                <svg class="blob-float pointer-events-none absolute right-14 sm:right-24 -bottom-16 w-48 h-48 sm:w-60 sm:h-60 opacity-45" viewBox="0 0 200 200" fill="none">
+                    <path d="M41.3,-49.6C53.6,-39.5,63.7,-26.5,67.3,-11.7C70.9,3.1,68,19.7,59.3,32.7C50.6,45.7,36.1,55.1,20.3,60.3C4.5,65.5,-12.6,66.5,-27.4,60.6C-42.2,54.7,-54.7,41.9,-61.2,26.8C-67.7,11.7,-68.2,-5.7,-61.9,-20.2C-55.6,-34.7,-42.5,-46.3,-28.6,-55.8C-14.7,-65.3,0,-72.7,13.8,-70.7C27.6,-68.7,29,-59.7,41.3,-49.6Z" transform="translate(100 105)" fill="#1b4d4a"/>
+                </svg>
+                <svg class="pointer-events-none absolute right-4 bottom-4 sm:right-6 sm:bottom-6 w-16 h-16 sm:w-20 sm:h-20 opacity-30" viewBox="0 0 100 100" fill="none">
+                    <use href="#m3-scallop-100" fill="#3a523e"/>
+                </svg>
+
+                <div class="relative z-10 flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-5 sm:gap-7">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 relative flex items-center justify-center flex-shrink-0">
+                        <svg class="w-full h-full overflow-visible drop-shadow-xl" viewBox="0 0 100 100" fill="none">
+                            <defs>
+                                <clipPath id="scallop-clip" clipPathUnits="userSpaceOnUse">
+                                    <path d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z"/>
+                                </clipPath>
+                            </defs>
+                            <g class="avatar-halo-spin">
+                                <path d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z" fill="#e59892"/>
+                            </g>
+                            <g clip-path="url(#scallop-clip)">
+                                <rect x="4" y="4" width="92" height="92" fill="#f5d000"/>
+                                <image href="https://avatars.githubusercontent.com/u/282026496?v=4" x="4" y="4" width="92" height="92" preserveAspectRatio="xMidYMid slice"/>
+                            </g>
+                            <path d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z" fill="none" stroke="#181c18" stroke-width="3"/>
+                        </svg>
+                    </div>
+
+                    <div class="space-y-3 min-w-0">
+                        <h1 class="hero-title font-extrabold tracking-tight text-white">
+                            Fasdeq<span class="text-[#ffb77c]">13</span>
+                        </h1>
+                        <p class="text-sm sm:text-base text-[#c4ccc4] max-w-xl leading-relaxed" data-i18n="heroBio">
+                            Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.
+                        </p>
+                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2c382e] text-[#cfe9d3] text-xs font-mono font-semibold">
+                                <svg class="w-3.5 h-3.5 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/>
+                                    <line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                </svg>
+                                <span data-i18n="ageChip">возраст: 14</span>
+                            </span>
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#252b26] border border-white/[0.07] text-[#dce3dc] text-xs font-mono font-medium">
+                                <svg class="w-3.5 h-3.5 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                    <rect x="9" y="9" width="6" height="6"/>
+                                    <line x1="9" y1="1" x2="9" y2="4"/>
+                                    <line x1="15" y1="1" x2="15" y2="4"/>
+                                    <line x1="9" y1="20" x2="9" y2="23"/>
+                                    <line x1="15" y1="20" x2="15" y2="23"/>
+                                </svg>
+                                <span>systems / low-level dev</span>
+                            </span>
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1e3829] text-[#a7f3be] text-xs font-mono font-semibold">
+                                <span class="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse"></span>
+                                <svg class="w-3.5 h-3.5 text-[#4ade80] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                                    <line x1="12" y1="20" x2="12.01" y2="20"/>
+                                </svg>
+                                <span>online</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="space-y-5 sm:space-y-6">
+            <div class="space-y-1 px-1">
+                <div class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#ffb77c]">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span>./projects</span>
+                </div>
+                <h2 class="section-title font-extrabold tracking-tight text-white" data-i18n="projectsTitle">Репозитории</h2>
+                <p class="text-xs sm:text-sm text-[#9aa39a]" data-i18n="projectsSubtitle">Мои репозитории</p>
+            </div>
+
+            <div class="m3-featured p-5 sm:p-8 relative overflow-hidden">
+                <div class="flex items-start gap-3.5 sm:gap-4">
+                    <div class="scallop-badge mt-0.5">
+                        <svg class="shape" viewBox="0 0 100 100" fill="none">
+                            <use href="#m3-scallop-100" fill="#5c3310"/>
+                        </svg>
+                        <svg class="glyph relative z-10 w-5 h-5 sm:w-6 sm:h-6 text-[#ffdcc2]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="3"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                            <path d="M8 9l3 2-3 2"/>
+                            <line x1="13" y1="13" x2="16" y2="13"/>
+                        </svg>
+                    </div>
+                    <div class="space-y-1.5 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <a href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener noreferrer" class="text-xl sm:text-2xl font-extrabold font-mono text-white hover:text-[#ffb77c] transition-colors">
+                                fasdeqOS
+                            </a>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-[#ffb77c]/15 text-[#ffb77c] border border-[#ffb77c]/30">
+                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                                    <polyline points="2 17 12 22 22 17"/>
+                                    <polyline points="2 12 12 17 22 12"/>
+                                </svg>
+                                OS
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-base text-[#d5dcd5] leading-relaxed max-w-2xl" data-i18n="fasdeqosDesc">
+                            FasdeqOS — операционная система с открытым исходным кодом, созданная для комфортного перехода с macOS на Linux.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-white/[0.08] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+                    <a href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener noreferrer" class="m3-pill min-h-[44px] inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-[#262b26] hover:bg-[#313831] text-xs font-mono font-semibold text-[#e4e7e3]">
+                        <svg class="w-4 h-4 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="6" y1="3" x2="6" y2="15"/>
+                            <circle cx="18" cy="6" r="3"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <path d="M18 9a9 9 0 0 1-9 9"/>
+                        </svg>
+                        <span class="truncate">github.com/Fasdeq13/fasdeqOS</span>
+                        <span class="flex-shrink-0">↗</span>
+                    </a>
+
+                    <a href="fasdeqos.html" class="m3-pill min-h-[48px] inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#ffb77c] hover:bg-[#ffc696] text-xs sm:text-sm font-bold text-[#3b1c00] shadow-lg shadow-[#ffb77c]/15">
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                        <span data-i18n="fasdeqosSiteBtn">Сайт FasdeqOS</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+
+                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between md:col-span-2">
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap items-start justify-between gap-2.5">
+                            <div class="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                                <div class="scallop-badge">
+                                    <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                        <use href="#m3-scallop-100" fill="#362c4d"/>
+                                    </svg>
+                                    <svg class="glyph relative z-10 w-5 h-5 text-[#d7c6ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                        <path d="M9 12l2 2 4-4"/>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <a href="https://github.com/Fasdeq13/Tunn.client" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors">
+                                        Tunn.client
+                                    </a>
+                                    <p class="text-xs sm:text-sm text-[#b4bdb4] mt-0.5" data-i18n="tunnDesc">Простой VPN-клиент.</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold tracking-wide bg-[#3b3222] text-[#f5c97b] border border-[#f5c97b]/25 whitespace-nowrap">
+                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="21 8 21 21 3 21 3 8"/>
+                                    <rect x="1" y="3" width="22" height="5"/>
+                                    <line x1="10" y1="12" x2="14" y2="12"/>
+                                </svg>
+                                ARCHIVED REPOSITORY
+                            </span>
+                        </div>
+
+                        <div class="space-y-2.5 pt-1">
+                            <div class="w-full h-2.5 rounded-full overflow-hidden flex bg-[#111311] gap-[2px]">
+                                <span style="width: 77.1%; background-color: #A97BFF;" title="Kotlin 77.1%"></span>
+                                <span style="width: 15.4%; background-color: #DEA584;" title="Rust 15.4%"></span>
+                                <span style="width: 3.2%; background-color: #555555;" title="C 3.2%"></span>
+                                <span style="width: 1.8%; background-color: #89E051;" title="Shell 1.8%"></span>
+                                <span style="width: 1.2%; background-color: #3572A5;" title="Python 1.2%"></span>
+                                <span style="width: 1.0%; background-color: #B07219;" title="Java 1%"></span>
+                                <span style="width: 0.3%; background-color: #EDEDED;" title="Other 0.3%"></span>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[11px] sm:text-xs font-mono">
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #A97BFF;"></span>
+                                    <span class="font-semibold">Kotlin</span> <span class="text-[#8f998f]">77.1%</span>
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #DEA584;"></span>
+                                    <span class="font-semibold">Rust</span> <span class="text-[#8f998f]">15.4%</span>
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #555555;"></span>
+                                    <span class="font-semibold">C</span> <span class="text-[#8f998f]">3.2%</span>
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #89E051;"></span>
+                                    <span class="font-semibold">Shell</span> <span class="text-[#8f998f]">1.8%</span>
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #3572A5;"></span>
+                                    <span class="font-semibold">Python</span> <span class="text-[#8f998f]">1.2%</span>
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #B07219;"></span>
+                                    <span class="font-semibold">Java</span> <span class="text-[#8f998f]">1%</span>
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
+                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #EDEDED;"></span>
+                                    <span class="font-semibold">Other</span> <span class="text-[#8f998f]">0.3%</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
+                        <a href="https://github.com/Fasdeq13/Tunn.client" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="6" y1="3" x2="6" y2="15"/>
+                                <circle cx="18" cy="6" r="3"/>
+                                <circle cx="6" cy="18" r="3"/>
+                                <path d="M18 9a9 9 0 0 1-9 9"/>
+                            </svg>
+                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#2b3d32"/>
+                                </svg>
+                                <svg class="glyph relative z-10 w-5 h-5 text-[#b5e8c6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    <path d="M8 11h6"/>
+                                    <path d="M11 8v6"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#25332a] text-[#9ed9b1]">
+                                <span class="w-2 h-2 rounded-full bg-[#f34b7d]"></span>
+                                C++
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <a href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
+                                FasdQuery
+                            </a>
+                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="fasdqueryDesc">
+                                Молниеносный поисковик файлов в реальном времени с GUI для Linux на C++ и Qt6. Оптимизирован под скорость и минимальный расход памяти.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
+                        <a href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="6" y1="3" x2="6" y2="15"/>
+                                <circle cx="18" cy="6" r="3"/>
+                                <circle cx="6" cy="18" r="3"/>
+                                <path d="M18 9a9 9 0 0 1-9 9"/>
+                            </svg>
+                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#473024"/>
+                                </svg>
+                                <svg class="glyph relative z-10 w-5 h-5 text-[#f7c5a8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="16 18 22 12 16 6"/>
+                                    <polyline points="8 6 2 12 8 18"/>
+                                    <line x1="14" y1="4" x2="10" y2="20"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#3a2a21] text-[#f2be9d]">
+                                <span class="w-2 h-2 rounded-full bg-[#dea584]"></span>
+                                Rust
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <a href="https://github.com/Fasdeq13/fasdeq-studio" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
+                                fasdeq-studio
+                            </a>
+                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="studioDesc">
+                                IDE, написанная на Rust и созданная для низкоуровневой разработки.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
+                        <a href="https://github.com/Fasdeq13/fasdeq-studio" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="6" y1="3" x2="6" y2="15"/>
+                                <circle cx="18" cy="6" r="3"/>
+                                <circle cx="6" cy="18" r="3"/>
+                                <path d="M18 9a9 9 0 0 1-9 9"/>
+                            </svg>
+                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#263b3e"/>
+                                </svg>
+                                <svg class="glyph relative z-10 w-5 h-5 text-[#bcebf0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <line x1="12" y1="3" x2="12" y2="21"/>
+                                    <line x1="6" y1="8" x2="9" y2="8"/>
+                                    <line x1="6" y1="12" x2="9" y2="12"/>
+                                    <line x1="15" y1="8" x2="18" y2="8"/>
+                                    <line x1="15" y1="12" x2="18" y2="12"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#3a2a21] text-[#f2be9d]">
+                                <span class="w-2 h-2 rounded-full bg-[#dea584]"></span>
+                                Rust
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <a href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
+                                FasdCommander
+                            </a>
+                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="commanderDesc">
+                                Быстрый командер написанный на egui + rust
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
+                        <a href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="6" y1="3" x2="6" y2="15"/>
+                                <circle cx="18" cy="6" r="3"/>
+                                <circle cx="6" cy="18" r="3"/>
+                                <path d="M18 9a9 9 0 0 1-9 9"/>
+                            </svg>
+                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#47282b"/>
+                                </svg>
+                                <svg class="glyph relative z-10 w-5 h-5 text-[#ffb4ab]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                                    <polyline points="2 17 12 22 22 17"/>
+                                    <polyline points="2 12 12 17 22 12"/>
+                                </svg>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wide bg-[#3b3222] text-[#f5c97b] border border-[#f5c97b]/25">
+                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="21 8 21 21 3 21 3 8"/>
+                                    <rect x="1" y="3" width="22" height="5"/>
+                                    <line x1="10" y1="12" x2="14" y2="12"/>
+                                </svg>
+                                ARCHIVED REPOSITORY
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <a href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
+                                vulkan-cocoa-core
+                            </a>
+                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="vulkanDesc">
+                                Графический слой трансляции, связывающий Apple Cocoa, CoreAnimation и Metal 3 с нативным Vulkan 1.3 API на системах Darwin/XNU.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
+                        <a href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="6" y1="3" x2="6" y2="15"/>
+                                <circle cx="18" cy="6" r="3"/>
+                                <circle cx="6" cy="18" r="3"/>
+                                <path d="M18 9a9 9 0 0 1-9 9"/>
+                            </svg>
+                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
+                        </a>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#3a2a21] text-[#f2be9d]">
+                            <span class="w-2 h-2 rounded-full bg-[#dea584]"></span>
+                            Rust
+                        </span>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section id="contacts" class="space-y-5 sm:space-y-6">
+            <div class="space-y-1 px-1">
+                <div class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#ffb77c]">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    </svg>
+                    <span>./contacts</span>
+                </div>
+                <h2 class="section-title font-extrabold tracking-tight text-white" data-i18n="contactsTitle">Контакты</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+                <a href="https://github.com/Fasdeq13" target="_blank" rel="noopener noreferrer" class="m3-card p-5 sm:p-6 flex flex-col justify-between group">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#2c382e"/>
+                                </svg>
+                                <span class="relative z-10 font-mono text-xs font-extrabold text-[#cfe9d3]">GH</span>
+                            </div>
+                            <span class="w-9 h-9 rounded-full bg-[#262b26] group-hover:bg-[#ffb77c] group-hover:text-[#3b1c00] flex items-center justify-center text-xs font-mono text-[#9aa39a] transition-colors">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"/>
+                                    <polyline points="7 7 17 7 17 17"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#cfe9d3]" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                                </svg>
+                                <h3 class="text-base font-bold text-white group-hover:text-[#ffb77c] transition-colors">GitHub</h3>
+                            </div>
+                            <p class="text-xs text-[#9aa39a] mt-1" data-i18n="ghSub">исходный код и проекты</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 sm:mt-5 pt-3.5 border-t border-white/[0.06] font-mono text-xs text-[#b4bdb4] truncate">
+                        github.com/Fasdeq13
+                    </div>
+                </a>
+
+                <a href="https://t.me/raZOVry" target="_blank" rel="noopener noreferrer" class="m3-card p-5 sm:p-6 flex flex-col justify-between group">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#1e3b3f"/>
+                                </svg>
+                                <span class="relative z-10 font-mono text-xs font-extrabold text-[#bcebf0]">TG</span>
+                            </div>
+                            <span class="w-9 h-9 rounded-full bg-[#262b26] group-hover:bg-[#ffb77c] group-hover:text-[#3b1c00] flex items-center justify-center text-xs font-mono text-[#9aa39a] transition-colors">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"/>
+                                    <polyline points="7 7 17 7 17 17"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#bcebf0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                                <h3 class="text-base font-bold text-white group-hover:text-[#ffb77c] transition-colors">Telegram</h3>
+                            </div>
+                            <p class="text-xs text-[#9aa39a] mt-1" data-i18n="tgSub">личная связь</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 sm:mt-5 pt-3.5 border-t border-white/[0.06] font-mono text-xs text-[#b4bdb4] truncate">
+                        t.me/raZOVry
+                    </div>
+                </a>
+
+                <a href="https://steamcommunity.com/id/Fasdeq" target="_blank" rel="noopener noreferrer" class="m3-card p-5 sm:p-6 flex flex-col justify-between group">
+                    <div class="space-y-3.5 sm:space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="scallop-badge">
+                                <svg class="shape" viewBox="0 0 100 100" fill="none">
+                                    <use href="#m3-scallop-100" fill="#5c3310"/>
+                                </svg>
+                                <span class="relative z-10 font-mono text-xs font-extrabold text-[#ffdcc2]">ST</span>
+                            </div>
+                            <span class="w-9 h-9 rounded-full bg-[#262b26] group-hover:bg-[#ffb77c] group-hover:text-[#3b1c00] flex items-center justify-center text-xs font-mono text-[#9aa39a] transition-colors">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"/>
+                                    <polyline points="7 7 17 7 17 17"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-[#ffdcc2]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="6" width="20" height="12" rx="6"/>
+                                    <line x1="6" y1="12" x2="10" y2="12"/>
+                                    <line x1="8" y1="10" x2="8" y2="14"/>
+                                    <line x1="15" y1="13" x2="15.01" y2="13"/>
+                                    <line x1="18" y1="11" x2="18.01" y2="11"/>
+                                </svg>
+                                <h3 class="text-base font-bold text-white group-hover:text-[#ffb77c] transition-colors">Steam</h3>
+                            </div>
+                            <p class="text-xs text-[#9aa39a] mt-1" data-i18n="stSub">Профиль Steam</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 sm:mt-5 pt-3.5 border-t border-white/[0.06] font-mono text-xs text-[#b4bdb4] truncate">
+                        steamcommunity.com/id/Fasdeq
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-4xl mx-auto px-3.5 sm:px-6 py-8 sm:py-10 mt-4 sm:mt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-xs text-[#758075]">
+        <span>Fasdeq13</span>
+        <span>fasdeq@fasdeqos:~$</span>
+    </footer>
+
+    <script>
+        const translations = {
+            ru: {
+                boot1: "загрузка модулей ядра",
+                boot2: "монтирование /Users/projects",
+                boot3: "инициализация profile.json",
+                statusLabel: "статус:",
+                heroBio: "Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.",
+                ageChip: "возраст: 14",
+                projectsTitle: "Репозитории",
+                projectsSubtitle: "Мои репозитории",
+                fasdeqosDesc: "FasdeqOS — операционная система с открытым исходным кодом, созданная для комфортного перехода с macOS на Linux.",
+                fasdeqosSiteBtn: "Сайт FasdeqOS",
+                tunnDesc: "Простой VPN-клиент.",
+                fasdqueryDesc: "Молниеносный поисковик файлов в реальном времени с GUI для Linux на C++ и Qt6. Оптимизирован под скорость и минимальный расход памяти.",
+                studioDesc: "IDE, написанная на Rust и созданная для низкоуровневой разработки.",
+                commanderDesc: "Быстрый командер написанный на egui + rust",
+                vulkanDesc: "Графический слой трансляции, связывающий Apple Cocoa, CoreAnimation и Metal 3 с нативным Vulkan 1.3 API на системах Darwin/XNU.",
+                openRepo: "открыть репозиторий ↗",
+                contactsTitle: "Контакты",
+                ghSub: "исходный код и проекты",
+                tgSub: "личная связь",
+                stSub: "Профиль Steam"
+            },
+            en: {
+                boot1: "loading kernel modules",
+                boot2: "mounting /Users/projects",
+                boot3: "initializing profile.json",
+                statusLabel: "status:",
+                heroBio: "Writing in C++ and Rust what usually lives deep inside the system.",
+                ageChip: "age: 14",
+                projectsTitle: "Repositories",
+                projectsSubtitle: "My repositories",
+                fasdeqosDesc: "FasdeqOS is an open-source operating system designed to facilitate the transition from macOS to Linux.",
+                fasdeqosSiteBtn: "FasdeqOS Website",
+                tunnDesc: "Simple VPN client.",
+                fasdqueryDesc: "A blazing-fast, real-time file search engine and GUI for Linux, written in C++ and Qt6. Optimized for speed and low memory footprint.",
+                studioDesc: "An IDE written in Rust and designed for low-level development.",
+                commanderDesc: "Fast commander written in egui + rust",
+                vulkanDesc: "vulkan-cocoa-core is a graphics translation layer designed to bridge Apple's Cocoa, CoreAnimation, and Metal 3 with the native Vulkan 1.3 API on Darwin/XNU systems.",
+                openRepo: "open repository ↗",
+                contactsTitle: "Contacts",
+                ghSub: "source code and projects",
+                tgSub: "direct message",
+                stSub: "Steam Profile"
+            }
+        };
+
+        function setLanguage(lang) {
+            const target = lang === 'ru' ? 'ru' : 'en';
+            const btnRu = document.getElementById('lang-ru');
+            const btnEn = document.getElementById('lang-en');
+
+            if (target === 'ru') {
+                btnRu.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-bold bg-[#ffb77c] text-[#3b1c00]";
+                btnEn.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-semibold text-[#9aa39a] hover:text-white";
+            } else {
+                btnEn.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-bold bg-[#ffb77c] text-[#3b1c00]";
+                btnRu.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-semibold text-[#9aa39a] hover:text-white";
+            }
+
+            document.documentElement.lang = target;
+            const dict = translations[target];
+
+            document.querySelectorAll('[data-i18n]').forEach(function (node) {
+                const key = node.getAttribute('data-i18n');
+                if (dict[key]) {
+                    node.textContent = dict[key];
+                }
+            });
+        }
+
+        function initLocale() {
+            const raw = (navigator.language || navigator.userLanguage || '').toLowerCase();
+            const cisPrefixes = ['ru', 'be', 'uk', 'kk'];
+            const isRu = cisPrefixes.some(function (prefix) {
+                return raw === prefix || raw.startsWith(prefix + '-');
+            });
+            setLanguage(isRu ? 'ru' : 'en');
+        }
+
+        function initInteractiveAmbient() {
+            const l1 = document.getElementById('parallax-layer-1');
+            const l2 = document.getElementById('parallax-layer-2');
+            const l3 = document.getElementById('parallax-layer-3');
+            const glow = document.getElementById('pointer-glow');
+            if (!l1 || !l2 || !l3 || !glow) return;
+
+            let targetNx = 0;
+            let targetNy = 0;
+            let currentNx = 0;
+            let currentNy = 0;
+            let glowX = window.innerWidth * 0.5;
+            let glowY = window.innerHeight * 0.3;
+            let targetGlowX = glowX;
+            let targetGlowY = glowY;
+            let active = false;
+
+            function updatePointer(clientX, clientY) {
+                const w = window.innerWidth || 1;
+                const h = window.innerHeight || 1;
+                targetNx = (clientX / w) - 0.5;
+                targetNy = (clientY / h) - 0.5;
+                targetGlowX = clientX;
+                targetGlowY = clientY;
+                if (!active) {
+                    active = true;
+                    glow.style.opacity = '1';
+                }
+            }
+
+            window.addEventListener('mousemove', function (e) {
+                updatePointer(e.clientX, e.clientY);
+            }, { passive: true });
+
+            window.addEventListener('touchstart', function (e) {
+                if (e.touches && e.touches.length > 0) {
+                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', function (e) {
+                if (e.touches && e.touches.length > 0) {
+                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', function () {
+                targetNx = 0;
+                targetNy = 0;
+                active = false;
+                glow.style.opacity = '0';
+            }, { passive: true });
+
+            document.addEventListener('mouseleave', function () {
+                targetNx = 0;
+                targetNy = 0;
+                active = false;
+                glow.style.opacity = '0';
+            });
+
+            function animate() {
+                currentNx += (targetNx - currentNx) * 0.08;
+                currentNy += (targetNy - currentNy) * 0.08;
+                glowX += (targetGlowX - glowX) * 0.14;
+                glowY += (targetGlowY - glowY) * 0.14;
+
+                l1.style.transform = 'translate3d(' + (currentNx * 44).toFixed(2) + 'px, ' + (currentNy * 44).toFixed(2) + 'px, 0)';
+                l2.style.transform = 'translate3d(' + (currentNx * -52).toFixed(2) + 'px, ' + (currentNy * -38).toFixed(2) + 'px, 0)';
+                l3.style.transform = 'translate3d(' + (currentNx * 34).toFixed(2) + 'px, ' + (currentNy * -28).toFixed(2) + 'px, 0)';
+                glow.style.transform = 'translate3d(' + (glowX - 180).toFixed(1) + 'px, ' + (glowY - 180).toFixed(1) + 'px, 0)';
+
+                requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            initLocale();
+            initInteractiveAmbient();
+        });
+    </script>
 </body>
 </html>
