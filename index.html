@@ -1,1096 +1,192 @@
-<!DOCTYPE html>
-<html lang="ru" class="dark">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>fasdeq@fasdeqos:~$</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --surface-bg: #111311;
-            --surface-container-low: #171a17;
-            --surface-container: #1d211d;
-            --surface-container-high: #262b26;
-            --outline-variant: #384038;
-            --primary: #ffb77c;
-            --primary-container: #5c3310;
-            --on-primary: #3b1c00;
-            --on-primary-container: #ffdcc2;
-            --secondary-container: #2c382e;
-            --on-secondary-container: #cfe9d3;
-            --tertiary-container: #1e3b3f;
-            --on-tertiary-container: #bcebf0;
-        }
-
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--surface-bg);
-            color: #e4e7e3;
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .hero-title {
-            font-size: clamp(2.15rem, 8vw, 3.25rem);
-            line-height: 1.08;
-        }
-
-        .section-title {
-            font-size: clamp(1.5rem, 5vw, 1.95rem);
-            line-height: 1.2;
-        }
-
-        .m3-card {
-            background-color: var(--surface-container);
-            border: 1px solid rgba(255, 255, 255, 0.065);
-            border-radius: 28px;
-            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
-            transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1), background-color 0.28s cubic-bezier(0.2, 0, 0, 1), border-color 0.28s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        @media (min-width: 640px) {
-            .m3-card {
-                border-radius: 30px;
-            }
-        }
-
-        .m3-card:hover {
-            background-color: var(--surface-container-high);
-            border-color: rgba(255, 183, 124, 0.34);
-            transform: translateY(-3px);
-            box-shadow: inset 0 1px 0 0 rgba(255, 183, 124, 0.14), 0 20px 38px -14px rgba(0, 0, 0, 0.6);
-        }
-
-        .m3-card:active {
-            transform: scale(0.992);
-        }
-
-        .m3-featured {
-            background: linear-gradient(145deg, #26221b 0%, #1b221d 100%);
-            border: 1px solid rgba(255, 183, 124, 0.36);
-            border-radius: 30px;
-            box-shadow: inset 0 1px 0 0 rgba(255, 183, 124, 0.16), 0 18px 40px -18px rgba(0, 0, 0, 0.65);
-            transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1), border-color 0.28s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        @media (min-width: 640px) {
-            .m3-featured {
-                border-radius: 32px;
-            }
-        }
-
-        .m3-featured:hover {
-            border-color: rgba(255, 183, 124, 0.72);
-            transform: translateY(-3px);
-            box-shadow: inset 0 1px 0 0 rgba(255, 183, 124, 0.24), 0 24px 46px -16px rgba(255, 183, 124, 0.18);
-        }
-
-        .m3-pill {
-            border-radius: 9999px;
-            transition: all 0.22s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        .m3-pill:active {
-            transform: scale(0.96);
-        }
-
-        .scallop-badge {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 640px) {
-            .scallop-badge {
-                width: 54px;
-                height: 54px;
-            }
-        }
-
-        .scallop-badge svg.shape {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28));
-            transition: transform 0.5s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        .scallop-badge svg.glyph {
-            transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        .m3-card:hover .scallop-badge svg.shape,
-        .m3-featured:hover .scallop-badge svg.shape {
-            transform: rotate(30deg) scale(1.06);
-        }
-
-        .m3-card:hover .scallop-badge svg.glyph,
-        .m3-featured:hover .scallop-badge svg.glyph {
-            transform: scale(1.08);
-        }
-
-        .cursor-blink {
-            animation: blink 1.1s steps(2, start) infinite;
-        }
-
-        @keyframes blink {
-            to {
-                visibility: hidden;
-            }
-        }
-
-        .blob-float {
-            animation: floatSlow 14s ease-in-out infinite alternate;
-        }
-
-        @keyframes floatSlow {
-            0% {
-                transform: translate(0px, 0px) rotate(0deg) scale(1);
-            }
-            100% {
-                transform: translate(-10px, 8px) rotate(6deg) scale(1.04);
-            }
-        }
-
-        .ambient-blob-1 {
-            animation: driftOne 22s ease-in-out infinite alternate;
-        }
-
-        .ambient-blob-2 {
-            animation: driftTwo 26s ease-in-out infinite alternate;
-        }
-
-        .ambient-blob-3 {
-            animation: spinSlow 48s linear infinite;
-        }
-
-        .avatar-halo-spin {
-            animation: haloPulseSpin 16s ease-in-out infinite alternate;
-            transform-origin: 50px 50px;
-        }
-
-        @keyframes driftOne {
-            0% {
-                transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-            }
-            50% {
-                transform: translate3d(36px, -24px, 0) rotate(14deg) scale(1.08);
-            }
-            100% {
-                transform: translate3d(-20px, 28px, 0) rotate(-10deg) scale(0.96);
-            }
-        }
-
-        @keyframes driftTwo {
-            0% {
-                transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-            }
-            50% {
-                transform: translate3d(-32px, 22px, 0) rotate(-16deg) scale(1.1);
-            }
-            100% {
-                transform: translate3d(24px, -26px, 0) rotate(12deg) scale(0.95);
-            }
-        }
-
-        @keyframes spinSlow {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes haloPulseSpin {
-            0% {
-                transform: translate(3px, -2px) rotate(-10deg) scale(1.03);
-            }
-            50% {
-                transform: translate(4px, 2px) rotate(14deg) scale(1.07);
-            }
-            100% {
-                transform: translate(2px, -3px) rotate(28deg) scale(1.02);
-            }
-        }
-
-        .bg-dot-matrix {
-            background-image: radial-gradient(rgba(255, 183, 124, 0.09) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-
-        #pointer-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 360px;
-            height: 360px;
-            border-radius: 9999px;
-            background: radial-gradient(circle, rgba(255, 183, 124, 0.15) 0%, rgba(27, 77, 74, 0.09) 42%, rgba(17, 19, 17, 0) 72%);
-            pointer-events: none;
-            will-change: transform, opacity;
-            opacity: 0;
-            transition: opacity 0.45s ease;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #111311;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #2c332c;
-            border-radius: 9999px;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FasdeqOS — Leave macOS. Keep the feeling.</title>
+<meta name="description" content="FasdeqOS is a Linux distribution built for an easy move from macOS: familiar folders, a calm black desktop, one simple package manager.">
+<meta name="theme-color" content="#05060f">
+<style>
+:root{--bg:#05060f;--fg:#eceaf6;--mut:#9a98b4;--line:rgba(255,255,255,.09);--glass:rgba(255,255,255,.045);--o:#ff9a3d;--p:#ff5a8a;--v:#8b6cff;--b:#4aa3ff}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{color:var(--fg);font:17px/1.6 "Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.sky{position:fixed;inset:0;z-index:-2;background:radial-gradient(1200px 700px at 50% 108%,rgba(255,120,70,.55),rgba(255,70,130,.28) 38%,rgba(70,50,170,.18) 62%,transparent 78%),radial-gradient(900px 600px at 18% 8%,rgba(60,90,220,.22),transparent 70%),radial-gradient(800px 500px at 88% 20%,rgba(120,70,230,.16),transparent 70%),linear-gradient(#04050d,#080a1c 55%,#10092a)}
+.stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.stars i{position:absolute;border-radius:50%;background:#fff;opacity:.8;animation:tw 4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.95;transform:scale(1.15)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:22px;padding:16px clamp(18px,5vw,56px);backdrop-filter:blur(14px);background:linear-gradient(rgba(5,6,15,.7),rgba(5,6,15,0))}
+nav b{font-size:19px;letter-spacing:.01em}
+nav .sp{flex:1}
+nav a{text-decoration:none;color:var(--mut);font-size:15px;transition:color .2s}
+nav a:hover{color:var(--fg)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,5vw,40px)}
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 0 80px}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);background:var(--glass);padding:7px 14px;border-radius:99px}
+.tag span{width:7px;height:7px;border-radius:50%;background:var(--o);box-shadow:0 0 12px var(--o)}
+h1{font-size:clamp(54px,11vw,138px);line-height:.95;letter-spacing:-.045em;font-weight:800;margin:26px 0 18px;background:linear-gradient(100deg,#fff 10%,#ffd2a8 38%,#ff7aa3 62%,#a48bff 90%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 50px rgba(255,100,120,.25))}
+.lead{font-size:clamp(19px,2.4vw,26px);max-width:30ch;color:#d9d6ee;font-weight:500;letter-spacing:-.01em}
+.sub{margin-top:16px;max-width:56ch;color:var(--mut)}
+.btns{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:38px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:14px;font-weight:650;text-decoration:none;font-size:17px;transition:transform .25s,box-shadow .25s,background .25s;border:1px solid var(--line)}
+.btn:hover{transform:translateY(-3px)}
+.btn.main{background:linear-gradient(110deg,var(--o),var(--p));color:#1b0a10;border:0;box-shadow:0 14px 44px rgba(255,100,110,.35)}
+.btn.main:hover{box-shadow:0 18px 60px rgba(255,100,110,.5)}
+.btn.ghost{background:var(--glass);backdrop-filter:blur(10px)}
+.btn.ghost:hover{background:rgba(255,255,255,.09)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:34px;color:var(--mut);font-size:14px}
+.chips span{border:1px solid var(--line);border-radius:99px;padding:5px 12px;background:var(--glass)}
+section.wrap{padding-top:90px;padding-bottom:90px}
+h2{font-size:clamp(30px,4.6vw,52px);letter-spacing:-.03em;line-height:1.08;font-weight:750;max-width:18ch}
+.kick{color:var(--o);font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.two p{color:var(--mut);margin-top:18px;max-width:46ch}
+.win{border:1px solid var(--line);border-radius:18px;background:rgba(14,15,32,.72);backdrop-filter:blur(18px);box-shadow:0 40px 90px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03) inset;overflow:hidden}
+.bar{display:flex;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.bar i{width:12px;height:12px;border-radius:50%;background:#ff5f57}
+.bar i:nth-child(2){background:#febc2e}
+.bar i:nth-child(3){background:#28c840}
+.bar em{margin-left:auto;font-style:normal;color:var(--mut);font-size:13px}
+.fm{display:grid;grid-template-columns:150px 1fr;min-height:260px}
+.fm aside{padding:16px 12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mut)}
+.fm aside div{padding:7px 10px;border-radius:8px}
+.fm aside div.on{background:rgba(255,154,61,.14);color:var(--fg)}
+.fm .g{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:22px;align-content:start}
+.fm .g div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.fm .g svg{width:54px;height:54px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px}
+.card{padding:28px;border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(10px);transition:transform .3s,border-color .3s,background .3s}
+.card:hover{transform:translateY(-6px);border-color:rgba(255,154,61,.4);background:rgba(255,255,255,.065)}
+.card svg{width:34px;height:34px;margin-bottom:16px;stroke:var(--o);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.card h3{font-size:19px;margin-bottom:8px;letter-spacing:-.01em}
+.card p{color:var(--mut);font-size:15.5px}
+.term{font:14.5px/1.75 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:22px 24px;color:#d9d6ee}
+.term .c{color:var(--mut)}
+.term .y{color:#6ee7a0}
+.term .o{color:var(--o)}
+section.cta{text-align:center;padding-top:110px;padding-bottom:70px}
+.cta h2{margin:0 auto 14px;max-width:16ch}
+.cta p{color:var(--mut);margin-bottom:32px}
+.stack{display:flex;flex-direction:column;align-items:center;gap:14px}
+.stack .btn{min-width:260px;justify-content:center}
+.btn.big{padding:19px 44px;font-size:20px;border-radius:16px}
+footer{padding:36px 0 50px;border-top:1px solid var(--line);color:var(--mut);font-size:14px;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+footer a{text-decoration:none}
+footer a:hover{color:var(--fg)}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s ease}
+.rv.in{opacity:1;transform:none}
+@media(max-width:860px){.two{grid-template-columns:1fr;gap:34px}.grid{grid-template-columns:1fr}.fm{grid-template-columns:110px 1fr}nav a.h{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+.req{max-width:560px;margin:0 auto 28px;text-align:left;padding:20px 24px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.05)}.req h3{margin:0 0 10px;font-size:16px}.req ul{margin:0;padding-left:20px;line-height:1.8;opacity:.9}</style>
 </head>
-<body class="min-h-screen relative selection:bg-[#ffb77c] selection:text-[#3b1c00]">
+<body>
+<div class="sky"></div>
+<div class="stars" id="stars" aria-hidden="true"></div>
+<nav>
+<b>FasdeqOS</b>
+<span class="sp"></span>
+<a class="h" href="#why">Why</a>
+<a class="h" href="#features">Features</a>
+<a href="wiki.html">Handbook</a>
+<a href="#get">Download</a>
+</nav>
+<main>
+<header class="hero wrap">
+<div class="tag"><span></span>Linux for people coming from macOS</div>
+<h1>FasdeqOS</h1>
+<p class="lead">Leave macOS. Keep the feeling.</p>
+<p class="sub">A calm, black, familiar Linux. Applications, System and Users are where you expect them. Install an app by dropping it in a folder. Everything else just works.</p>
+<div class="btns">
+<a class="btn main" href="#get">Download</a>
+<a class="btn ghost" href="wiki.html">Read the Handbook</a>
+</div>
+<div class="chips"><span>Based on Arch Linux</span><span>niri + Quickshell</span><span>x86_64 · UEFI</span><span>GPL-2.0</span></div>
+</header>
 
-    <div id="m3-ambient-canvas" class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-        <div class="absolute inset-0 bg-dot-matrix opacity-75"></div>
-        <div id="pointer-glow"></div>
-        <div id="parallax-layer-1" class="absolute -top-28 -left-24 w-[340px] h-[340px] sm:w-[520px] sm:h-[520px] will-change-transform">
-            <svg class="ambient-blob-1 w-full h-full opacity-30 blur-2xl" viewBox="0 0 200 200" fill="none">
-                <path d="M48.5,-62.3C62.1,-53.4,71.8,-37.9,76.4,-21.2C81,-4.5,80.5,13.4,73.1,28.1C65.7,42.8,51.4,54.3,35.8,62.3C20.2,70.3,3.3,74.8,-13.7,73.1C-30.7,71.4,-47.8,63.5,-59.8,50.6C-71.8,37.7,-78.7,19.8,-78.2,2.2C-77.7,-15.4,-69.8,-32.7,-57.5,-41.8C-45.2,-50.9,-28.5,-51.8,-13.4,-57.5C1.7,-63.2,15.2,-73.7,29.6,-73.3C44,-72.9,34.9,-71.2,48.5,-62.3Z" transform="translate(100 100)" fill="#6e3528"/>
-            </svg>
-        </div>
-        <div id="parallax-layer-2" class="absolute top-1/3 -right-24 w-[360px] h-[360px] sm:w-[560px] sm:h-[560px] will-change-transform">
-            <svg class="ambient-blob-2 w-full h-full opacity-25 blur-2xl" viewBox="0 0 200 200" fill="none">
-                <path d="M41.3,-49.6C53.6,-39.5,63.7,-26.5,67.3,-11.7C70.9,3.1,68,19.7,59.3,32.7C50.6,45.7,36.1,55.1,20.3,60.3C4.5,65.5,-12.6,66.5,-27.4,60.6C-42.2,54.7,-54.7,41.9,-61.2,26.8C-67.7,11.7,-68.2,-5.7,-61.9,-20.2C-55.6,-34.7,-42.5,-46.3,-28.6,-55.8C-14.7,-65.3,0,-72.7,13.8,-70.7C27.6,-68.7,29,-59.7,41.3,-49.6Z" transform="translate(100 100)" fill="#1b4d4a"/>
-            </svg>
-        </div>
-        <div id="parallax-layer-3" class="absolute -bottom-28 left-1/6 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] will-change-transform">
-            <svg class="ambient-blob-1 w-full h-full opacity-20 blur-3xl" viewBox="0 0 200 200" fill="none">
-                <path d="M44.7,-56.4C57.6,-46.8,67.5,-32.5,71.4,-16.8C75.3,-1.1,73.2,16,64.8,29.6C56.4,43.2,41.7,53.3,25.8,59.6C9.9,65.9,-7.2,68.4,-23.1,63.8C-39,59.2,-53.7,47.5,-62.3,32.6C-70.9,17.7,-73.4,-0.4,-68.3,-16.4C-63.2,-32.4,-50.5,-46.3,-36.2,-55.6C-21.9,-64.9,-6,-69.6,8.7,-69.9C23.4,-70.2,31.8,-66,44.7,-56.4Z" transform="translate(100 100)" fill="#5c3310"/>
-            </svg>
-        </div>
-        <svg class="ambient-blob-3 absolute top-24 right-6 sm:right-12 w-24 h-24 sm:w-36 sm:h-36 opacity-[0.06]" viewBox="0 0 100 100" fill="none">
-            <use href="#m3-scallop-100" fill="#ffb77c"/>
-        </svg>
-        <svg class="ambient-blob-3 absolute bottom-24 left-4 sm:left-10 w-28 h-28 sm:w-44 sm:h-44 opacity-[0.05]" viewBox="0 0 100 100" fill="none">
-            <use href="#m3-scallop-100" fill="#81c995"/>
-        </svg>
-    </div>
+<section id="why" class="wrap">
+<div class="two">
+<div class="rv">
+<div class="kick">Familiar by design</div>
+<h2>Your files live where they always did.</h2>
+<p>Open the root of the disk and you see three folders: Applications, System and Users. Not a wall of cryptic names. The rest is hidden away, the way a Mac hides it. Your home is <b>/Users/you</b>.</p>
+<p>Programs are folders in <b>/Applications</b>. Delete a folder, the program is gone. Drop an AppImage in, it is installed.</p>
+</div>
+<div class="win rv">
+<div class="bar"><i></i><i></i><i></i><em>/</em></div>
+<div class="fm">
+<aside><div class="on">Applications</div><div>System</div><div>Users</div><div>Downloads</div><div>Documents</div></aside>
+<div class="g">
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#ff9a3d"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#ffb86b"/></svg>Applications</div>
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#8b6cff"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#a590ff"/></svg>System</div>
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#ff5a8a"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#ff86a9"/></svg>Users</div>
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#4aa3ff"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#7bbcff"/></svg>Mount</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 
-    <svg width="0" height="0" class="hidden" aria-hidden="true">
-        <defs>
-            <path id="m3-scallop-100" d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z"/>
-        </defs>
-    </svg>
+<section id="features" class="wrap">
+<div class="kick rv">What you get</div>
+<h2 class="rv">Everything a switcher needs, nothing they do not.</h2>
+<div class="grid">
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><h3>Drop to install</h3><p>Put an .appimage, .tar.zst or .pkg into Applications and it installs. Delete it and it uninstalls.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><h3>niri + Quickshell</h3><p>A smooth scrolling window manager with a shell we wrote: launcher, calendar, network, sound, screenshots, power.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></svg><h3>One package manager</h3><p>pkg install, pkg remove, pkg upgrade. That is the whole thing. The engine underneath is hidden.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"/></svg><h3>Black everywhere</h3><p>One dark theme across GTK and Qt apps, black terminal, black shell, Papirus icons.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01"/></svg><h3>A friendly installer</h3><p>Pick a Wi-Fi network from a list, tick your keyboard layouts, choose a disk. It sets up only the graphics drivers your hardware needs.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><h3>Honest handbook</h3><p>Plain-language guide in English, Russian and German. Changing a keybind takes five lines.</p></div>
+</div>
+</section>
 
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#111311]/85 border-b border-white/[0.06] pt-[env(safe-area-inset-top)]">
-        <div class="max-w-4xl mx-auto px-3.5 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
-            <div class="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#1d211d] border border-white/[0.08] shadow-inner min-w-0">
-                <span class="w-2 h-2 rounded-full bg-[#ffb77c] animate-pulse flex-shrink-0"></span>
-                <svg class="w-3.5 h-3.5 text-[#ffb77c]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="4 17 10 11 4 5"/>
-                    <line x1="12" y1="19" x2="20" y2="19"/>
-                </svg>
-                <span class="font-mono text-xs sm:text-sm font-medium text-[#ffb77c] truncate">fasdeq@fasdeqos:~$</span>
-            </div>
+<section class="wrap">
+<div class="two">
+<div class="rv">
+<div class="kick">Simple on purpose</div>
+<h2>Three commands. That is the manual.</h2>
+<p>Install, remove, update. Kernels, drivers and libraries stay out of your Applications folder, where they belong.</p>
+</div>
+<div class="win rv">
+<div class="bar"><i></i><i></i><i></i><em>ghostty</em></div>
+<div class="term">
+<div><span class="y">~</span> <span class="o">❯</span> pkg install firefox</div>
+<div class="c">resolving dependencies…</div>
+<div><span class="y">~</span> <span class="o">❯</span> pkg install --system linux-zen</div>
+<div class="c">kernel added to /System/Kernels</div>
+<div><span class="y">~</span> <span class="o">❯</span> pkg upgrade</div>
+<div class="c">FasdeqOS is up to date</div>
+</div>
+</div>
+</div>
+</section>
 
-            <div class="inline-flex items-center gap-1 p-1 rounded-full bg-[#1d211d] border border-white/[0.08] flex-shrink-0" role="group" aria-label="Language switcher">
-                <span class="pl-2 pr-0.5 text-[#8f998f] hidden sm:inline-flex items-center">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="2" y1="12" x2="22" y2="12"/>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                    </svg>
-                </span>
-                <button type="button" id="lang-ru" onclick="setLanguage('ru')" class="m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-bold bg-[#ffb77c] text-[#3b1c00]">RU</button>
-                <button type="button" id="lang-en" onclick="setLanguage('en')" class="m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-semibold text-[#9aa39a] hover:text-white">EN</button>
-            </div>
-        </div>
-    </header>
-
-    <main class="relative z-10 max-w-4xl mx-auto px-3.5 sm:px-6 py-6 sm:py-12 space-y-12 sm:space-y-16">
-
-        <section class="space-y-4 sm:space-y-6">
-            <div class="rounded-[26px] sm:rounded-[30px] bg-[#171a17] border border-white/[0.08] overflow-hidden shadow-2xl">
-                <div class="px-4 sm:px-5 py-3 bg-[#1d211d] border-b border-white/[0.06] flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ff6b6b]/85 flex-shrink-0"></span>
-                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#ffd166]/85 flex-shrink-0"></span>
-                        <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#6bcb77]/85 flex-shrink-0"></span>
-                        <svg class="ml-1.5 w-3.5 h-3.5 text-[#ffb77c]/80 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
-                            <polyline points="13 2 13 9 20 9"/>
-                        </svg>
-                        <span class="font-mono text-[11px] sm:text-xs text-[#8f998f] truncate">/Users/fasdeq13/profile.sh</span>
-                    </div>
-                    <span class="inline-flex items-center gap-1 font-mono text-[11px] text-[#8f998f] bg-[#252a25] px-2 py-0.5 rounded-full flex-shrink-0">
-                        <svg class="w-3 h-3 text-[#ffb77c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="4 17 10 11 4 5"/>
-                            <line x1="12" y1="19" x2="20" y2="19"/>
-                        </svg>
-                        zsh
-                    </span>
-                </div>
-                <div class="p-4 sm:p-6 font-mono text-[11px] sm:text-sm space-y-2 leading-relaxed overflow-x-auto">
-                    <div class="text-[#ffb77c] whitespace-nowrap flex items-center gap-2">
-                        <span>&gt; boot fasdeq13.sys</span>
-                    </div>
-                    <div class="text-[#81c995] flex items-center gap-2">
-                        <span class="whitespace-nowrap">[ ok ]</span>
-                        <svg class="w-3.5 h-3.5 text-[#81c995]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="4" y="4" width="16" height="16" rx="2"/>
-                            <rect x="9" y="9" width="6" height="6"/>
-                            <line x1="9" y1="1" x2="9" y2="4"/>
-                            <line x1="15" y1="1" x2="15" y2="4"/>
-                            <line x1="9" y1="20" x2="9" y2="23"/>
-                            <line x1="15" y1="20" x2="15" y2="23"/>
-                            <line x1="20" y1="9" x2="23" y2="9"/>
-                            <line x1="20" y1="14" x2="23" y2="14"/>
-                            <line x1="1" y1="9" x2="4" y2="9"/>
-                            <line x1="1" y1="14" x2="4" y2="14"/>
-                        </svg>
-                        <span class="text-[#d6dbd6]" data-i18n="boot1">загрузка модулей ядра</span>
-                    </div>
-                    <div class="text-[#81c995] flex items-center gap-2">
-                        <span class="whitespace-nowrap">[ ok ]</span>
-                        <svg class="w-3.5 h-3.5 text-[#81c995]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                        </svg>
-                        <span class="text-[#d6dbd6]" data-i18n="boot2">монтирование /Users/projects</span>
-                    </div>
-                    <div class="text-[#81c995] flex items-center gap-2">
-                        <span class="whitespace-nowrap">[ ok ]</span>
-                        <svg class="w-3.5 h-3.5 text-[#81c995]/85 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                        </svg>
-                        <span class="text-[#d6dbd6]" data-i18n="boot3">инициализация profile.json</span>
-                    </div>
-                    <div class="text-[#ffb77c] pt-1 whitespace-nowrap">&gt; whoami</div>
-                    <div class="text-white font-semibold flex items-center gap-2">
-                        <svg class="w-4 h-4 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <span>Fasdeq13 — systems / low-level dev</span>
-                    </div>
-                    <div class="flex items-center gap-2 pt-0.5">
-                        <span class="text-[#9aa39a]" data-i18n="statusLabel">статус:</span>
-                        <span class="text-[#81c995] font-semibold">online</span>
-                        <span class="inline-block w-2 h-3.5 sm:h-4 bg-[#ffb77c] cursor-blink"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative rounded-[28px] sm:rounded-[32px] bg-[#1a1f1a] border border-white/[0.08] p-5 sm:p-9 overflow-hidden shadow-xl">
-                <svg class="blob-float pointer-events-none absolute -right-12 -top-12 w-56 h-56 sm:w-72 sm:h-72 opacity-55" viewBox="0 0 200 200" fill="none">
-                    <path d="M48.5,-62.3C62.1,-53.4,71.8,-37.9,76.4,-21.2C81,-4.5,80.5,13.4,73.1,28.1C65.7,42.8,51.4,54.3,35.8,62.3C20.2,70.3,3.3,74.8,-13.7,73.1C-30.7,71.4,-47.8,63.5,-59.8,50.6C-71.8,37.7,-78.7,19.8,-78.2,2.2C-77.7,-15.4,-69.8,-32.7,-57.5,-41.8C-45.2,-50.9,-28.5,-51.8,-13.4,-57.5C1.7,-63.2,15.2,-73.7,29.6,-73.3C44,-72.9,34.9,-71.2,48.5,-62.3Z" transform="translate(105 95)" fill="#6e3528"/>
-                </svg>
-                <svg class="blob-float pointer-events-none absolute right-14 sm:right-24 -bottom-16 w-48 h-48 sm:w-60 sm:h-60 opacity-45" viewBox="0 0 200 200" fill="none">
-                    <path d="M41.3,-49.6C53.6,-39.5,63.7,-26.5,67.3,-11.7C70.9,3.1,68,19.7,59.3,32.7C50.6,45.7,36.1,55.1,20.3,60.3C4.5,65.5,-12.6,66.5,-27.4,60.6C-42.2,54.7,-54.7,41.9,-61.2,26.8C-67.7,11.7,-68.2,-5.7,-61.9,-20.2C-55.6,-34.7,-42.5,-46.3,-28.6,-55.8C-14.7,-65.3,0,-72.7,13.8,-70.7C27.6,-68.7,29,-59.7,41.3,-49.6Z" transform="translate(100 105)" fill="#1b4d4a"/>
-                </svg>
-                <svg class="pointer-events-none absolute right-4 bottom-4 sm:right-6 sm:bottom-6 w-16 h-16 sm:w-20 sm:h-20 opacity-30" viewBox="0 0 100 100" fill="none">
-                    <use href="#m3-scallop-100" fill="#3a523e"/>
-                </svg>
-
-                <div class="relative z-10 flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-5 sm:gap-7">
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 relative flex items-center justify-center flex-shrink-0">
-                        <svg class="w-full h-full overflow-visible drop-shadow-xl" viewBox="0 0 100 100" fill="none">
-                            <defs>
-                                <clipPath id="scallop-clip" clipPathUnits="userSpaceOnUse">
-                                    <path d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z"/>
-                                </clipPath>
-                            </defs>
-                            <g class="avatar-halo-spin">
-                                <path d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z" fill="#e59892"/>
-                            </g>
-                            <g clip-path="url(#scallop-clip)">
-                                <rect x="4" y="4" width="92" height="92" fill="#f5d000"/>
-                                <image href="https://avatars.githubusercontent.com/u/282026496?v=4" x="4" y="4" width="92" height="92" preserveAspectRatio="xMidYMid slice"/>
-                            </g>
-                            <path d="M50 4 C55.1 4 58.1 10.4 62.8 11.9 C67.5 13.4 74 9.7 78.1 12.7 C82.2 15.7 81 22.8 83.9 26.8 C86.8 30.8 94 31.7 95.5 36.4 C97 41.1 91.8 46.1 91.8 51.2 C91.8 56.3 97 61.3 95.5 66 C94 70.7 86.8 71.6 83.9 75.6 C81 79.6 82.2 86.7 78.1 89.7 C74 92.7 67.5 89 62.8 90.5 C58.1 92 55.1 98.4 50 98.4 C44.9 98.4 41.9 92 37.2 90.5 C32.5 89 26 92.7 21.9 89.7 C17.8 86.7 19 79.6 16.1 75.6 C13.2 71.6 6 70.7 4.5 66 C3 61.3 8.2 56.3 8.2 51.2 C8.2 46.1 3 41.1 4.5 36.4 C6 31.7 13.2 30.8 16.1 26.8 C19 22.8 17.8 15.7 21.9 12.7 C26 9.7 32.5 13.4 37.2 11.9 C41.9 10.4 44.9 4 50 4 Z" fill="none" stroke="#181c18" stroke-width="3"/>
-                        </svg>
-                    </div>
-
-                    <div class="space-y-3 min-w-0">
-                        <h1 class="hero-title font-extrabold tracking-tight text-white">
-                            Fasdeq<span class="text-[#ffb77c]">13</span>
-                        </h1>
-                        <p class="text-sm sm:text-base text-[#c4ccc4] max-w-xl leading-relaxed" data-i18n="heroBio">
-                            Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.
-                        </p>
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2c382e] text-[#cfe9d3] text-xs font-mono font-semibold">
-                                <svg class="w-3.5 h-3.5 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                </svg>
-                                <span data-i18n="ageChip">возраст: 14</span>
-                            </span>
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#252b26] border border-white/[0.07] text-[#dce3dc] text-xs font-mono font-medium">
-                                <svg class="w-3.5 h-3.5 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="4" y="4" width="16" height="16" rx="2"/>
-                                    <rect x="9" y="9" width="6" height="6"/>
-                                    <line x1="9" y1="1" x2="9" y2="4"/>
-                                    <line x1="15" y1="1" x2="15" y2="4"/>
-                                    <line x1="9" y1="20" x2="9" y2="23"/>
-                                    <line x1="15" y1="20" x2="15" y2="23"/>
-                                </svg>
-                                <span>systems / low-level dev</span>
-                            </span>
-                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1e3829] text-[#a7f3be] text-xs font-mono font-semibold">
-                                <span class="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse"></span>
-                                <svg class="w-3.5 h-3.5 text-[#4ade80] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
-                                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-                                    <line x1="12" y1="20" x2="12.01" y2="20"/>
-                                </svg>
-                                <span>online</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" class="space-y-5 sm:space-y-6">
-            <div class="space-y-1 px-1">
-                <div class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#ffb77c]">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                    </svg>
-                    <span>./projects</span>
-                </div>
-                <h2 class="section-title font-extrabold tracking-tight text-white" data-i18n="projectsTitle">Репозитории</h2>
-                <p class="text-xs sm:text-sm text-[#9aa39a]" data-i18n="projectsSubtitle">Мои репозитории</p>
-            </div>
-
-            <div class="m3-featured p-5 sm:p-8 relative overflow-hidden">
-                <div class="flex items-start gap-3.5 sm:gap-4">
-                    <div class="scallop-badge mt-0.5">
-                        <svg class="shape" viewBox="0 0 100 100" fill="none">
-                            <use href="#m3-scallop-100" fill="#5c3310"/>
-                        </svg>
-                        <svg class="glyph relative z-10 w-5 h-5 sm:w-6 sm:h-6 text-[#ffdcc2]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="3" width="20" height="14" rx="3"/>
-                            <line x1="8" y1="21" x2="16" y2="21"/>
-                            <line x1="12" y1="17" x2="12" y2="21"/>
-                            <path d="M8 9l3 2-3 2"/>
-                            <line x1="13" y1="13" x2="16" y2="13"/>
-                        </svg>
-                    </div>
-                    <div class="space-y-1.5 min-w-0">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <a href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener noreferrer" class="text-xl sm:text-2xl font-extrabold font-mono text-white hover:text-[#ffb77c] transition-colors">
-                                fasdeqOS
-                            </a>
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-[#ffb77c]/15 text-[#ffb77c] border border-[#ffb77c]/30">
-                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                                    <polyline points="2 17 12 22 22 17"/>
-                                    <polyline points="2 12 12 17 22 12"/>
-                                </svg>
-                                OS
-                            </span>
-                        </div>
-                        <p class="text-xs sm:text-base text-[#d5dcd5] leading-relaxed max-w-2xl" data-i18n="fasdeqosDesc">
-                            FasdeqOS — операционная система с открытым исходным кодом, созданная для комфортного перехода с macOS на Linux.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-white/[0.08] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
-                    <a href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener noreferrer" class="m3-pill min-h-[44px] inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 bg-[#262b26] hover:bg-[#313831] text-xs font-mono font-semibold text-[#e4e7e3]">
-                        <svg class="w-4 h-4 text-[#ffb77c] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="6" y1="3" x2="6" y2="15"/>
-                            <circle cx="18" cy="6" r="3"/>
-                            <circle cx="6" cy="18" r="3"/>
-                            <path d="M18 9a9 9 0 0 1-9 9"/>
-                        </svg>
-                        <span class="truncate">github.com/Fasdeq13/fasdeqOS</span>
-                        <span class="flex-shrink-0">↗</span>
-                    </a>
-
-                    <a href="fasdeqos.html" class="m3-pill min-h-[48px] inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#ffb77c] hover:bg-[#ffc696] text-xs sm:text-sm font-bold text-[#3b1c00] shadow-lg shadow-[#ffb77c]/15">
-                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="2" y1="12" x2="22" y2="12"/>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                        </svg>
-                        <span data-i18n="fasdeqosSiteBtn">Сайт FasdeqOS</span>
-                        <span>→</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-
-                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between md:col-span-2">
-                    <div class="space-y-4">
-                        <div class="flex flex-wrap items-start justify-between gap-2.5">
-                            <div class="flex items-center gap-3 sm:gap-3.5 min-w-0">
-                                <div class="scallop-badge">
-                                    <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                        <use href="#m3-scallop-100" fill="#362c4d"/>
-                                    </svg>
-                                    <svg class="glyph relative z-10 w-5 h-5 text-[#d7c6ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                                        <path d="M9 12l2 2 4-4"/>
-                                    </svg>
-                                </div>
-                                <div class="min-w-0">
-                                    <a href="https://github.com/Fasdeq13/Tunn.client" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors">
-                                        Tunn.client
-                                    </a>
-                                    <p class="text-xs sm:text-sm text-[#b4bdb4] mt-0.5" data-i18n="tunnDesc">Простой VPN-клиент.</p>
-                                </div>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-mono font-bold tracking-wide bg-[#3b3222] text-[#f5c97b] border border-[#f5c97b]/25 whitespace-nowrap">
-                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="21 8 21 21 3 21 3 8"/>
-                                    <rect x="1" y="3" width="22" height="5"/>
-                                    <line x1="10" y1="12" x2="14" y2="12"/>
-                                </svg>
-                                ARCHIVED REPOSITORY
-                            </span>
-                        </div>
-
-                        <div class="space-y-2.5 pt-1">
-                            <div class="w-full h-2.5 rounded-full overflow-hidden flex bg-[#111311] gap-[2px]">
-                                <span style="width: 77.1%; background-color: #A97BFF;" title="Kotlin 77.1%"></span>
-                                <span style="width: 15.4%; background-color: #DEA584;" title="Rust 15.4%"></span>
-                                <span style="width: 3.2%; background-color: #555555;" title="C 3.2%"></span>
-                                <span style="width: 1.8%; background-color: #89E051;" title="Shell 1.8%"></span>
-                                <span style="width: 1.2%; background-color: #3572A5;" title="Python 1.2%"></span>
-                                <span style="width: 1.0%; background-color: #B07219;" title="Java 1%"></span>
-                                <span style="width: 0.3%; background-color: #EDEDED;" title="Other 0.3%"></span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[11px] sm:text-xs font-mono">
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #A97BFF;"></span>
-                                    <span class="font-semibold">Kotlin</span> <span class="text-[#8f998f]">77.1%</span>
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #DEA584;"></span>
-                                    <span class="font-semibold">Rust</span> <span class="text-[#8f998f]">15.4%</span>
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #555555;"></span>
-                                    <span class="font-semibold">C</span> <span class="text-[#8f998f]">3.2%</span>
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #89E051;"></span>
-                                    <span class="font-semibold">Shell</span> <span class="text-[#8f998f]">1.8%</span>
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #3572A5;"></span>
-                                    <span class="font-semibold">Python</span> <span class="text-[#8f998f]">1.2%</span>
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #B07219;"></span>
-                                    <span class="font-semibold">Java</span> <span class="text-[#8f998f]">1%</span>
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-[#e4e7e3]">
-                                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style="background-color: #EDEDED;"></span>
-                                    <span class="font-semibold">Other</span> <span class="text-[#8f998f]">0.3%</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                        <a href="https://github.com/Fasdeq13/Tunn.client" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" y1="3" x2="6" y2="15"/>
-                                <circle cx="18" cy="6" r="3"/>
-                                <circle cx="6" cy="18" r="3"/>
-                                <path d="M18 9a9 9 0 0 1-9 9"/>
-                            </svg>
-                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
-                        </a>
-                    </div>
-                </article>
-
-                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#2b3d32"/>
-                                </svg>
-                                <svg class="glyph relative z-10 w-5 h-5 text-[#b5e8c6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                    <path d="M8 11h6"/>
-                                    <path d="M11 8v6"/>
-                                </svg>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#25332a] text-[#9ed9b1]">
-                                <span class="w-2 h-2 rounded-full bg-[#f34b7d]"></span>
-                                C++
-                            </span>
-                        </div>
-                        <div class="space-y-1.5">
-                            <a href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
-                                FasdQuery
-                            </a>
-                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="fasdqueryDesc">
-                                Молниеносный поисковик файлов в реальном времени с GUI для Linux на C++ и Qt6. Оптимизирован под скорость и минимальный расход памяти.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                        <a href="https://github.com/Fasdeq13/FasdQuery" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" y1="3" x2="6" y2="15"/>
-                                <circle cx="18" cy="6" r="3"/>
-                                <circle cx="6" cy="18" r="3"/>
-                                <path d="M18 9a9 9 0 0 1-9 9"/>
-                            </svg>
-                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
-                        </a>
-                    </div>
-                </article>
-
-                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#473024"/>
-                                </svg>
-                                <svg class="glyph relative z-10 w-5 h-5 text-[#f7c5a8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="16 18 22 12 16 6"/>
-                                    <polyline points="8 6 2 12 8 18"/>
-                                    <line x1="14" y1="4" x2="10" y2="20"/>
-                                </svg>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#3a2a21] text-[#f2be9d]">
-                                <span class="w-2 h-2 rounded-full bg-[#dea584]"></span>
-                                Rust
-                            </span>
-                        </div>
-                        <div class="space-y-1.5">
-                            <a href="https://github.com/Fasdeq13/fasdeq-studio" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
-                                fasdeq-studio
-                            </a>
-                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="studioDesc">
-                                IDE, написанная на Rust и созданная для низкоуровневой разработки.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                        <a href="https://github.com/Fasdeq13/fasdeq-studio" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" y1="3" x2="6" y2="15"/>
-                                <circle cx="18" cy="6" r="3"/>
-                                <circle cx="6" cy="18" r="3"/>
-                                <path d="M18 9a9 9 0 0 1-9 9"/>
-                            </svg>
-                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
-                        </a>
-                    </div>
-                </article>
-
-                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#263b3e"/>
-                                </svg>
-                                <svg class="glyph relative z-10 w-5 h-5 text-[#bcebf0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                    <line x1="12" y1="3" x2="12" y2="21"/>
-                                    <line x1="6" y1="8" x2="9" y2="8"/>
-                                    <line x1="6" y1="12" x2="9" y2="12"/>
-                                    <line x1="15" y1="8" x2="18" y2="8"/>
-                                    <line x1="15" y1="12" x2="18" y2="12"/>
-                                </svg>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#3a2a21] text-[#f2be9d]">
-                                <span class="w-2 h-2 rounded-full bg-[#dea584]"></span>
-                                Rust
-                            </span>
-                        </div>
-                        <div class="space-y-1.5">
-                            <a href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
-                                FasdCommander
-                            </a>
-                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="commanderDesc">
-                                Быстрый командер написанный на egui + rust
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                        <a href="https://github.com/FasdCommander/FasdCommander" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" y1="3" x2="6" y2="15"/>
-                                <circle cx="18" cy="6" r="3"/>
-                                <circle cx="6" cy="18" r="3"/>
-                                <path d="M18 9a9 9 0 0 1-9 9"/>
-                            </svg>
-                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
-                        </a>
-                    </div>
-                </article>
-
-                <article class="m3-card p-5 sm:p-6 flex flex-col justify-between">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#47282b"/>
-                                </svg>
-                                <svg class="glyph relative z-10 w-5 h-5 text-[#ffb4ab]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                                    <polyline points="2 17 12 22 22 17"/>
-                                    <polyline points="2 12 12 17 22 12"/>
-                                </svg>
-                            </div>
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wide bg-[#3b3222] text-[#f5c97b] border border-[#f5c97b]/25">
-                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="21 8 21 21 3 21 3 8"/>
-                                    <rect x="1" y="3" width="22" height="5"/>
-                                    <line x1="10" y1="12" x2="14" y2="12"/>
-                                </svg>
-                                ARCHIVED REPOSITORY
-                            </span>
-                        </div>
-                        <div class="space-y-1.5">
-                            <a href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener noreferrer" class="text-base sm:text-lg font-bold font-mono text-white hover:text-[#ffb77c] transition-colors inline-block">
-                                vulkan-cocoa-core
-                            </a>
-                            <p class="text-xs sm:text-sm text-[#b4bdb4] leading-relaxed" data-i18n="vulkanDesc">
-                                Графический слой трансляции, связывающий Apple Cocoa, CoreAnimation и Metal 3 с нативным Vulkan 1.3 API на системах Darwin/XNU.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between">
-                        <a href="https://github.com/Fasdeq13/vulkan-cocoa-core" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#ffb77c] hover:underline">
-                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" y1="3" x2="6" y2="15"/>
-                                <circle cx="18" cy="6" r="3"/>
-                                <circle cx="6" cy="18" r="3"/>
-                                <path d="M18 9a9 9 0 0 1-9 9"/>
-                            </svg>
-                            <span data-i18n="openRepo">открыть репозиторий ↗</span>
-                        </a>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#3a2a21] text-[#f2be9d]">
-                            <span class="w-2 h-2 rounded-full bg-[#dea584]"></span>
-                            Rust
-                        </span>
-                    </div>
-                </article>
-
-            </div>
-        </section>
-
-        <section id="contacts" class="space-y-5 sm:space-y-6">
-            <div class="space-y-1 px-1">
-                <div class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#ffb77c]">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                    </svg>
-                    <span>./contacts</span>
-                </div>
-                <h2 class="section-title font-extrabold tracking-tight text-white" data-i18n="contactsTitle">Контакты</h2>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
-                <a href="https://github.com/Fasdeq13" target="_blank" rel="noopener noreferrer" class="m3-card p-5 sm:p-6 flex flex-col justify-between group">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#2c382e"/>
-                                </svg>
-                                <span class="relative z-10 font-mono text-xs font-extrabold text-[#cfe9d3]">GH</span>
-                            </div>
-                            <span class="w-9 h-9 rounded-full bg-[#262b26] group-hover:bg-[#ffb77c] group-hover:text-[#3b1c00] flex items-center justify-center text-xs font-mono text-[#9aa39a] transition-colors">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="7" y1="17" x2="17" y2="7"/>
-                                    <polyline points="7 7 17 7 17 17"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#cfe9d3]" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-                                </svg>
-                                <h3 class="text-base font-bold text-white group-hover:text-[#ffb77c] transition-colors">GitHub</h3>
-                            </div>
-                            <p class="text-xs text-[#9aa39a] mt-1" data-i18n="ghSub">исходный код и проекты</p>
-                        </div>
-                    </div>
-                    <div class="mt-4 sm:mt-5 pt-3.5 border-t border-white/[0.06] font-mono text-xs text-[#b4bdb4] truncate">
-                        github.com/Fasdeq13
-                    </div>
-                </a>
-
-                <a href="https://t.me/raZOVry" target="_blank" rel="noopener noreferrer" class="m3-card p-5 sm:p-6 flex flex-col justify-between group">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#1e3b3f"/>
-                                </svg>
-                                <span class="relative z-10 font-mono text-xs font-extrabold text-[#bcebf0]">TG</span>
-                            </div>
-                            <span class="w-9 h-9 rounded-full bg-[#262b26] group-hover:bg-[#ffb77c] group-hover:text-[#3b1c00] flex items-center justify-center text-xs font-mono text-[#9aa39a] transition-colors">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="7" y1="17" x2="17" y2="7"/>
-                                    <polyline points="7 7 17 7 17 17"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#bcebf0]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="22" y1="2" x2="11" y2="13"/>
-                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                                </svg>
-                                <h3 class="text-base font-bold text-white group-hover:text-[#ffb77c] transition-colors">Telegram</h3>
-                            </div>
-                            <p class="text-xs text-[#9aa39a] mt-1" data-i18n="tgSub">личная связь</p>
-                        </div>
-                    </div>
-                    <div class="mt-4 sm:mt-5 pt-3.5 border-t border-white/[0.06] font-mono text-xs text-[#b4bdb4] truncate">
-                        t.me/raZOVry
-                    </div>
-                </a>
-
-                <a href="https://steamcommunity.com/id/Fasdeq" target="_blank" rel="noopener noreferrer" class="m3-card p-5 sm:p-6 flex flex-col justify-between group">
-                    <div class="space-y-3.5 sm:space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="scallop-badge">
-                                <svg class="shape" viewBox="0 0 100 100" fill="none">
-                                    <use href="#m3-scallop-100" fill="#5c3310"/>
-                                </svg>
-                                <span class="relative z-10 font-mono text-xs font-extrabold text-[#ffdcc2]">ST</span>
-                            </div>
-                            <span class="w-9 h-9 rounded-full bg-[#262b26] group-hover:bg-[#ffb77c] group-hover:text-[#3b1c00] flex items-center justify-center text-xs font-mono text-[#9aa39a] transition-colors">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="7" y1="17" x2="17" y2="7"/>
-                                    <polyline points="7 7 17 7 17 17"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#ffdcc2]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="6" width="20" height="12" rx="6"/>
-                                    <line x1="6" y1="12" x2="10" y2="12"/>
-                                    <line x1="8" y1="10" x2="8" y2="14"/>
-                                    <line x1="15" y1="13" x2="15.01" y2="13"/>
-                                    <line x1="18" y1="11" x2="18.01" y2="11"/>
-                                </svg>
-                                <h3 class="text-base font-bold text-white group-hover:text-[#ffb77c] transition-colors">Steam</h3>
-                            </div>
-                            <p class="text-xs text-[#9aa39a] mt-1" data-i18n="stSub">Профиль Steam</p>
-                        </div>
-                    </div>
-                    <div class="mt-4 sm:mt-5 pt-3.5 border-t border-white/[0.06] font-mono text-xs text-[#b4bdb4] truncate">
-                        steamcommunity.com/id/Fasdeq
-                    </div>
-                </a>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="max-w-4xl mx-auto px-3.5 sm:px-6 py-8 sm:py-10 mt-4 sm:mt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-xs text-[#758075]">
-        <span>Fasdeq13</span>
-        <span>fasdeq@fasdeqos:~$</span>
-    </footer>
-
-    <script>
-        const translations = {
-            ru: {
-                boot1: "загрузка модулей ядра",
-                boot2: "монтирование /Users/projects",
-                boot3: "инициализация profile.json",
-                statusLabel: "статус:",
-                heroBio: "Пишу на C++ и Rust то, что обычно живёт глубоко внутри системы.",
-                ageChip: "возраст: 14",
-                projectsTitle: "Репозитории",
-                projectsSubtitle: "Мои репозитории",
-                fasdeqosDesc: "FasdeqOS — операционная система с открытым исходным кодом, созданная для комфортного перехода с macOS на Linux.",
-                fasdeqosSiteBtn: "Сайт FasdeqOS",
-                tunnDesc: "Простой VPN-клиент.",
-                fasdqueryDesc: "Молниеносный поисковик файлов в реальном времени с GUI для Linux на C++ и Qt6. Оптимизирован под скорость и минимальный расход памяти.",
-                studioDesc: "IDE, написанная на Rust и созданная для низкоуровневой разработки.",
-                commanderDesc: "Быстрый командер написанный на egui + rust",
-                vulkanDesc: "Графический слой трансляции, связывающий Apple Cocoa, CoreAnimation и Metal 3 с нативным Vulkan 1.3 API на системах Darwin/XNU.",
-                openRepo: "открыть репозиторий ↗",
-                contactsTitle: "Контакты",
-                ghSub: "исходный код и проекты",
-                tgSub: "личная связь",
-                stSub: "Профиль Steam"
-            },
-            en: {
-                boot1: "loading kernel modules",
-                boot2: "mounting /Users/projects",
-                boot3: "initializing profile.json",
-                statusLabel: "status:",
-                heroBio: "Writing in C++ and Rust what usually lives deep inside the system.",
-                ageChip: "age: 14",
-                projectsTitle: "Repositories",
-                projectsSubtitle: "My repositories",
-                fasdeqosDesc: "FasdeqOS is an open-source operating system designed to facilitate the transition from macOS to Linux.",
-                fasdeqosSiteBtn: "FasdeqOS Website",
-                tunnDesc: "Simple VPN client.",
-                fasdqueryDesc: "A blazing-fast, real-time file search engine and GUI for Linux, written in C++ and Qt6. Optimized for speed and low memory footprint.",
-                studioDesc: "An IDE written in Rust and designed for low-level development.",
-                commanderDesc: "Fast commander written in egui + rust",
-                vulkanDesc: "vulkan-cocoa-core is a graphics translation layer designed to bridge Apple's Cocoa, CoreAnimation, and Metal 3 with the native Vulkan 1.3 API on Darwin/XNU systems.",
-                openRepo: "open repository ↗",
-                contactsTitle: "Contacts",
-                ghSub: "source code and projects",
-                tgSub: "direct message",
-                stSub: "Steam Profile"
-            }
-        };
-
-        function setLanguage(lang) {
-            const target = lang === 'ru' ? 'ru' : 'en';
-            const btnRu = document.getElementById('lang-ru');
-            const btnEn = document.getElementById('lang-en');
-
-            if (target === 'ru') {
-                btnRu.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-bold bg-[#ffb77c] text-[#3b1c00]";
-                btnEn.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-semibold text-[#9aa39a] hover:text-white";
-            } else {
-                btnEn.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-bold bg-[#ffb77c] text-[#3b1c00]";
-                btnRu.className = "m3-pill min-h-[34px] px-3.5 py-1 text-xs font-mono font-semibold text-[#9aa39a] hover:text-white";
-            }
-
-            document.documentElement.lang = target;
-            const dict = translations[target];
-
-            document.querySelectorAll('[data-i18n]').forEach(function (node) {
-                const key = node.getAttribute('data-i18n');
-                if (dict[key]) {
-                    node.textContent = dict[key];
-                }
-            });
-        }
-
-        function initLocale() {
-            const raw = (navigator.language || navigator.userLanguage || '').toLowerCase();
-            const cisPrefixes = ['ru', 'be', 'uk', 'kk'];
-            const isRu = cisPrefixes.some(function (prefix) {
-                return raw === prefix || raw.startsWith(prefix + '-');
-            });
-            setLanguage(isRu ? 'ru' : 'en');
-        }
-
-        function initInteractiveAmbient() {
-            const l1 = document.getElementById('parallax-layer-1');
-            const l2 = document.getElementById('parallax-layer-2');
-            const l3 = document.getElementById('parallax-layer-3');
-            const glow = document.getElementById('pointer-glow');
-            if (!l1 || !l2 || !l3 || !glow) return;
-
-            let targetNx = 0;
-            let targetNy = 0;
-            let currentNx = 0;
-            let currentNy = 0;
-            let glowX = window.innerWidth * 0.5;
-            let glowY = window.innerHeight * 0.3;
-            let targetGlowX = glowX;
-            let targetGlowY = glowY;
-            let active = false;
-
-            function updatePointer(clientX, clientY) {
-                const w = window.innerWidth || 1;
-                const h = window.innerHeight || 1;
-                targetNx = (clientX / w) - 0.5;
-                targetNy = (clientY / h) - 0.5;
-                targetGlowX = clientX;
-                targetGlowY = clientY;
-                if (!active) {
-                    active = true;
-                    glow.style.opacity = '1';
-                }
-            }
-
-            window.addEventListener('mousemove', function (e) {
-                updatePointer(e.clientX, e.clientY);
-            }, { passive: true });
-
-            window.addEventListener('touchstart', function (e) {
-                if (e.touches && e.touches.length > 0) {
-                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
-                }
-            }, { passive: true });
-
-            window.addEventListener('touchmove', function (e) {
-                if (e.touches && e.touches.length > 0) {
-                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
-                }
-            }, { passive: true });
-
-            window.addEventListener('touchend', function () {
-                targetNx = 0;
-                targetNy = 0;
-                active = false;
-                glow.style.opacity = '0';
-            }, { passive: true });
-
-            document.addEventListener('mouseleave', function () {
-                targetNx = 0;
-                targetNy = 0;
-                active = false;
-                glow.style.opacity = '0';
-            });
-
-            function animate() {
-                currentNx += (targetNx - currentNx) * 0.08;
-                currentNy += (targetNy - currentNy) * 0.08;
-                glowX += (targetGlowX - glowX) * 0.14;
-                glowY += (targetGlowY - glowY) * 0.14;
-
-                l1.style.transform = 'translate3d(' + (currentNx * 44).toFixed(2) + 'px, ' + (currentNy * 44).toFixed(2) + 'px, 0)';
-                l2.style.transform = 'translate3d(' + (currentNx * -52).toFixed(2) + 'px, ' + (currentNy * -38).toFixed(2) + 'px, 0)';
-                l3.style.transform = 'translate3d(' + (currentNx * 34).toFixed(2) + 'px, ' + (currentNy * -28).toFixed(2) + 'px, 0)';
-                glow.style.transform = 'translate3d(' + (glowX - 180).toFixed(1) + 'px, ' + (glowY - 180).toFixed(1) + 'px, 0)';
-
-                requestAnimationFrame(animate);
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('DOMContentLoaded', function () {
-            initLocale();
-            initInteractiveAmbient();
-        });
-    </script>
+<section id="get" class="cta wrap">
+<div class="kick rv">Ready?</div>
+<h2 class="rv">Bring your habits. Leave the rest.</h2>
+<p class="rv">x86_64, UEFI only, Secure Boot off. Free and open source.</p>
+<div class="req rv"><h3>Minimum requirements</h3><ul><li>CPU: 64-bit x86_64, 2 cores</li><li>Firmware: UEFI (Secure Boot off)</li><li>RAM: 2 GB (4 GB recommended)</li><li>Disk: 20 GB (SSD recommended)</li><li>USB stick: 4 GB or more</li><li>Internet: needed during installation</li></ul></div>
+<div class="stack rv">
+<a class="btn main big" id="dl" href="#get">Download</a>
+<a class="btn ghost" href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener">Open source</a>
+</div>
+</section>
+</main>
+<footer class="wrap">
+<span>FasdeqOS · GPL-2.0</span>
+<span><a href="wiki.html">Handbook</a> · <a href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener">Source</a> · <a href="https://github.com/Fasdeq13/fasdeqos-repositoriy" target="_blank" rel="noopener">Repository</a></span>
+</footer>
+<script>
+const DOWNLOAD_URL="https://github.com/Fasdeq13/fasdeqOS/releases/download/ISO/FasdeqOS-0.5-x86_64.iso";
+document.getElementById("dl").href=DOWNLOAD_URL;
+const st=document.getElementById("stars");
+for(let i=0;i<110;i++){
+const s=document.createElement("i");
+const z=Math.random()*2+.6;
+s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*78}%;width:${z}px;height:${z}px;animation-delay:${Math.random()*4}s;animation-duration:${3+Math.random()*4}s`;
+st.appendChild(s)}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll(".rv").forEach(e=>io.observe(e));
+</script>
 </body>
 </html>
