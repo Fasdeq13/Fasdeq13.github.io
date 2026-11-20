@@ -1,1 +1,192 @@
-скоро
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FasdeqOS — Leave macOS. Keep the feeling.</title>
+<meta name="description" content="FasdeqOS is a Linux distribution built for an easy move from macOS: familiar folders, a calm black desktop, one simple package manager.">
+<meta name="theme-color" content="#05060f">
+<style>
+:root{--bg:#05060f;--fg:#eceaf6;--mut:#9a98b4;--line:rgba(255,255,255,.09);--glass:rgba(255,255,255,.045);--o:#ff9a3d;--p:#ff5a8a;--v:#8b6cff;--b:#4aa3ff}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{color:var(--fg);font:17px/1.6 "Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.sky{position:fixed;inset:0;z-index:-2;background:radial-gradient(1200px 700px at 50% 108%,rgba(255,120,70,.55),rgba(255,70,130,.28) 38%,rgba(70,50,170,.18) 62%,transparent 78%),radial-gradient(900px 600px at 18% 8%,rgba(60,90,220,.22),transparent 70%),radial-gradient(800px 500px at 88% 20%,rgba(120,70,230,.16),transparent 70%),linear-gradient(#04050d,#080a1c 55%,#10092a)}
+.stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.stars i{position:absolute;border-radius:50%;background:#fff;opacity:.8;animation:tw 4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.95;transform:scale(1.15)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:22px;padding:16px clamp(18px,5vw,56px);backdrop-filter:blur(14px);background:linear-gradient(rgba(5,6,15,.7),rgba(5,6,15,0))}
+nav b{font-size:19px;letter-spacing:.01em}
+nav .sp{flex:1}
+nav a{text-decoration:none;color:var(--mut);font-size:15px;transition:color .2s}
+nav a:hover{color:var(--fg)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(18px,5vw,40px)}
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 0 80px}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);background:var(--glass);padding:7px 14px;border-radius:99px}
+.tag span{width:7px;height:7px;border-radius:50%;background:var(--o);box-shadow:0 0 12px var(--o)}
+h1{font-size:clamp(54px,11vw,138px);line-height:.95;letter-spacing:-.045em;font-weight:800;margin:26px 0 18px;background:linear-gradient(100deg,#fff 10%,#ffd2a8 38%,#ff7aa3 62%,#a48bff 90%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 50px rgba(255,100,120,.25))}
+.lead{font-size:clamp(19px,2.4vw,26px);max-width:30ch;color:#d9d6ee;font-weight:500;letter-spacing:-.01em}
+.sub{margin-top:16px;max-width:56ch;color:var(--mut)}
+.btns{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:38px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:14px;font-weight:650;text-decoration:none;font-size:17px;transition:transform .25s,box-shadow .25s,background .25s;border:1px solid var(--line)}
+.btn:hover{transform:translateY(-3px)}
+.btn.main{background:linear-gradient(110deg,var(--o),var(--p));color:#1b0a10;border:0;box-shadow:0 14px 44px rgba(255,100,110,.35)}
+.btn.main:hover{box-shadow:0 18px 60px rgba(255,100,110,.5)}
+.btn.ghost{background:var(--glass);backdrop-filter:blur(10px)}
+.btn.ghost:hover{background:rgba(255,255,255,.09)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:34px;color:var(--mut);font-size:14px}
+.chips span{border:1px solid var(--line);border-radius:99px;padding:5px 12px;background:var(--glass)}
+section.wrap{padding-top:90px;padding-bottom:90px}
+h2{font-size:clamp(30px,4.6vw,52px);letter-spacing:-.03em;line-height:1.08;font-weight:750;max-width:18ch}
+.kick{color:var(--o);font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.two p{color:var(--mut);margin-top:18px;max-width:46ch}
+.win{border:1px solid var(--line);border-radius:18px;background:rgba(14,15,32,.72);backdrop-filter:blur(18px);box-shadow:0 40px 90px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03) inset;overflow:hidden}
+.bar{display:flex;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.bar i{width:12px;height:12px;border-radius:50%;background:#ff5f57}
+.bar i:nth-child(2){background:#febc2e}
+.bar i:nth-child(3){background:#28c840}
+.bar em{margin-left:auto;font-style:normal;color:var(--mut);font-size:13px}
+.fm{display:grid;grid-template-columns:150px 1fr;min-height:260px}
+.fm aside{padding:16px 12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mut)}
+.fm aside div{padding:7px 10px;border-radius:8px}
+.fm aside div.on{background:rgba(255,154,61,.14);color:var(--fg)}
+.fm .g{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:22px;align-content:start}
+.fm .g div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.fm .g svg{width:54px;height:54px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:46px}
+.card{padding:28px;border:1px solid var(--line);border-radius:20px;background:var(--glass);backdrop-filter:blur(10px);transition:transform .3s,border-color .3s,background .3s}
+.card:hover{transform:translateY(-6px);border-color:rgba(255,154,61,.4);background:rgba(255,255,255,.065)}
+.card svg{width:34px;height:34px;margin-bottom:16px;stroke:var(--o);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.card h3{font-size:19px;margin-bottom:8px;letter-spacing:-.01em}
+.card p{color:var(--mut);font-size:15.5px}
+.term{font:14.5px/1.75 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:22px 24px;color:#d9d6ee}
+.term .c{color:var(--mut)}
+.term .y{color:#6ee7a0}
+.term .o{color:var(--o)}
+section.cta{text-align:center;padding-top:110px;padding-bottom:70px}
+.cta h2{margin:0 auto 14px;max-width:16ch}
+.cta p{color:var(--mut);margin-bottom:32px}
+.stack{display:flex;flex-direction:column;align-items:center;gap:14px}
+.stack .btn{min-width:260px;justify-content:center}
+.btn.big{padding:19px 44px;font-size:20px;border-radius:16px}
+footer{padding:36px 0 50px;border-top:1px solid var(--line);color:var(--mut);font-size:14px;display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+footer a{text-decoration:none}
+footer a:hover{color:var(--fg)}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s ease}
+.rv.in{opacity:1;transform:none}
+@media(max-width:860px){.two{grid-template-columns:1fr;gap:34px}.grid{grid-template-columns:1fr}.fm{grid-template-columns:110px 1fr}nav a.h{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+.req{max-width:560px;margin:0 auto 28px;text-align:left;padding:20px 24px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(255,255,255,.05)}.req h3{margin:0 0 10px;font-size:16px}.req ul{margin:0;padding-left:20px;line-height:1.8;opacity:.9}</style>
+</head>
+<body>
+<div class="sky"></div>
+<div class="stars" id="stars" aria-hidden="true"></div>
+<nav>
+<b>FasdeqOS</b>
+<span class="sp"></span>
+<a class="h" href="#why">Why</a>
+<a class="h" href="#features">Features</a>
+<a href="wiki.html">Handbook</a>
+<a href="#get">Download</a>
+</nav>
+<main>
+<header class="hero wrap">
+<div class="tag"><span></span>Linux for people coming from macOS</div>
+<h1>FasdeqOS</h1>
+<p class="lead">Leave macOS. Keep the feeling.</p>
+<p class="sub">A calm, black, familiar Linux. Applications, System and Users are where you expect them. Install an app by dropping it in a folder. Everything else just works.</p>
+<div class="btns">
+<a class="btn main" href="#get">Download</a>
+<a class="btn ghost" href="wiki.html">Read the Handbook</a>
+</div>
+<div class="chips"><span>Based on Arch Linux</span><span>niri + Quickshell</span><span>x86_64 · UEFI</span><span>GPL-2.0</span></div>
+</header>
+
+<section id="why" class="wrap">
+<div class="two">
+<div class="rv">
+<div class="kick">Familiar by design</div>
+<h2>Your files live where they always did.</h2>
+<p>Open the root of the disk and you see three folders: Applications, System and Users. Not a wall of cryptic names. The rest is hidden away, the way a Mac hides it. Your home is <b>/Users/you</b>.</p>
+<p>Programs are folders in <b>/Applications</b>. Delete a folder, the program is gone. Drop an AppImage in, it is installed.</p>
+</div>
+<div class="win rv">
+<div class="bar"><i></i><i></i><i></i><em>/</em></div>
+<div class="fm">
+<aside><div class="on">Applications</div><div>System</div><div>Users</div><div>Downloads</div><div>Documents</div></aside>
+<div class="g">
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#ff9a3d"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#ffb86b"/></svg>Applications</div>
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#8b6cff"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#a590ff"/></svg>System</div>
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#ff5a8a"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#ff86a9"/></svg>Users</div>
+<div><svg viewBox="0 0 54 54"><rect x="4" y="9" width="46" height="38" rx="8" fill="#4aa3ff"/><path d="M4 18a8 8 0 0 1 8-8h12l5 6h13a8 8 0 0 1 8 8v-2" fill="#7bbcff"/></svg>Mount</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="features" class="wrap">
+<div class="kick rv">What you get</div>
+<h2 class="rv">Everything a switcher needs, nothing they do not.</h2>
+<div class="grid">
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><h3>Drop to install</h3><p>Put an .appimage, .tar.zst or .pkg into Applications and it installs. Delete it and it uninstalls.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><h3>niri + Quickshell</h3><p>A smooth scrolling window manager with a shell we wrote: launcher, calendar, network, sound, screenshots, power.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></svg><h3>One package manager</h3><p>pkg install, pkg remove, pkg upgrade. That is the whole thing. The engine underneath is hidden.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"/></svg><h3>Black everywhere</h3><p>One dark theme across GTK and Qt apps, black terminal, black shell, Papirus icons.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01"/></svg><h3>A friendly installer</h3><p>Pick a Wi-Fi network from a list, tick your keyboard layouts, choose a disk. It sets up only the graphics drivers your hardware needs.</p></div>
+<div class="card rv"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><h3>Honest handbook</h3><p>Plain-language guide in English, Russian and German. Changing a keybind takes five lines.</p></div>
+</div>
+</section>
+
+<section class="wrap">
+<div class="two">
+<div class="rv">
+<div class="kick">Simple on purpose</div>
+<h2>Three commands. That is the manual.</h2>
+<p>Install, remove, update. Kernels, drivers and libraries stay out of your Applications folder, where they belong.</p>
+</div>
+<div class="win rv">
+<div class="bar"><i></i><i></i><i></i><em>ghostty</em></div>
+<div class="term">
+<div><span class="y">~</span> <span class="o">❯</span> pkg install firefox</div>
+<div class="c">resolving dependencies…</div>
+<div><span class="y">~</span> <span class="o">❯</span> pkg install --system linux-zen</div>
+<div class="c">kernel added to /System/Kernels</div>
+<div><span class="y">~</span> <span class="o">❯</span> pkg upgrade</div>
+<div class="c">FasdeqOS is up to date</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="get" class="cta wrap">
+<div class="kick rv">Ready?</div>
+<h2 class="rv">Bring your habits. Leave the rest.</h2>
+<p class="rv">x86_64, UEFI only, Secure Boot off. Free and open source.</p>
+<div class="req rv"><h3>Minimum requirements</h3><ul><li>CPU: 64-bit x86_64, 2 cores</li><li>Firmware: UEFI (Secure Boot off)</li><li>RAM: 2 GB (4 GB recommended)</li><li>Disk: 20 GB (SSD recommended)</li><li>USB stick: 4 GB or more</li><li>Internet: needed during installation</li></ul></div>
+<div class="stack rv">
+<a class="btn main big" id="dl" href="#get">Download</a>
+<a class="btn ghost" href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener">Open source</a>
+</div>
+</section>
+</main>
+<footer class="wrap">
+<span>FasdeqOS · GPL-2.0</span>
+<span><a href="wiki.html">Handbook</a> · <a href="https://github.com/Fasdeq13/fasdeqOS" target="_blank" rel="noopener">Source</a> · <a href="https://github.com/Fasdeq13/fasdeqos-repositoriy" target="_blank" rel="noopener">Repository</a></span>
+</footer>
+<script>
+const DOWNLOAD_URL="https://github.com/Fasdeq13/fasdeqOS/releases/download/ISO/FasdeqOS-0.5-x86_64.iso";
+document.getElementById("dl").href=DOWNLOAD_URL;
+const st=document.getElementById("stars");
+for(let i=0;i<110;i++){
+const s=document.createElement("i");
+const z=Math.random()*2+.6;
+s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*78}%;width:${z}px;height:${z}px;animation-delay:${Math.random()*4}s;animation-duration:${3+Math.random()*4}s`;
+st.appendChild(s)}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll(".rv").forEach(e=>io.observe(e));
+</script>
+</body>
+</html>
