@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FasdeqOS Handbook</title>
+<style>
+:root{--bg:#fff;--fg:#1d1d1f;--mut:#5f6368;--line:#e2e4e8;--acc:#c2410c;--code:#f4f5f7;--side:#fafafa}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0b0d;--fg:#e8e8ea;--mut:#9aa0a6;--line:#25262b;--acc:#fb923c;--code:#151519;--side:#0f0f12}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--acc)}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--line)}
+header b{font-size:18px}
+header .sp{flex:1}
+.lang button{font:inherit;font-size:14px;padding:4px 10px;border:1px solid var(--line);background:var(--side);color:var(--fg);cursor:pointer}
+.lang button:first-child{border-radius:8px 0 0 8px}
+.lang button:last-child{border-radius:0 8px 8px 0}
+.lang button[aria-pressed=true]{background:var(--acc);color:#fff;border-color:var(--acc)}
+.wrap{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1180px;margin:0 auto}
+nav{position:sticky;top:56px;align-self:start;max-height:calc(100vh - 56px);overflow:auto;padding:20px;border-right:1px solid var(--line);font-size:14px}
+nav h4{margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+nav a{display:block;padding:3px 0;color:var(--fg);text-decoration:none}
+nav a:hover{color:var(--acc)}
+nav a.l3{padding-left:14px;color:var(--mut)}
+nav a.l4{padding-left:28px;color:var(--mut)}
+main{padding:28px 32px 80px;min-width:0}
+h1{font-size:34px;margin:0 0 6px}
+h2{font-size:26px;margin:44px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:20px;margin:30px 0 8px}
+h4{font-size:17px;margin:24px 0 6px}
+p,li{max-width:76ch}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:14px;line-height:1.5}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+p code,li code,td code{background:var(--code);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+table{border-collapse:collapse;width:100%;margin:10px 0 18px;font-size:15px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+td:first-child{white-space:nowrap}
+kbd{font:inherit;font-size:.9em;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--code)}
+.note{border-left:4px solid var(--acc);background:var(--code);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.warn{border-left-color:#dc2626}
+#modal{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6)}
+#modal.on{display:flex}
+#modal div{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:28px;text-align:center;max-width:380px}
+#modal button{font:inherit;margin:6px;padding:10px 20px;border-radius:10px;border:1px solid var(--line);background:var(--side);color:var(--fg);cursor:pointer}
+#modal button:hover{border-color:var(--acc)}
+@media(max-width:860px){.wrap{display:block}nav{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}main{padding:20px 16px 60px}}
+</style>
+</head>
+<body>
+<header>
+<b id="brand">FasdeqOS Handbook</b>
+<span class="sp"></span>
+<span class="lang" role="group" aria-label="Language">
+<button data-l="en">EN</button><button data-l="ru">RU</button><button data-l="de">DE</button>
+</span>
+</header>
+<div class="wrap">
+<nav><h4 id="tocH"></h4><div id="toc"></div></nav>
+<main id="main"></main>
+</div>
+<div id="modal"><div>
+<p><b>Choose your language<br>Выбери язык<br>Sprache wählen</b></p>
+<button data-l="en">English</button><button data-l="ru">Русский</button><button data-l="de">Deutsch</button>
+</div></div>
+<script>
+const LINKS={
+kernel:"https://kernel.org",arch:"https://archlinux.org",apple:"https://www.apple.com/macos/",
+pacman:"https://wiki.archlinux.org/title/Pacman",niri:"https://github.com/niri-wm/niri",qs:"https://quickshell.org",
+fq:"https://github.com/Fasdeq13/FasdQuery",src:"https://github.com/Fasdeq13/fasdeqOS",repo:"https://github.com/Fasdeq13/fasdeqos-repositoriy",
+pm:{en:"https://en.wikipedia.org/wiki/Package_manager",ru:"https://ru.wikipedia.org/wiki/Система_управления_пакетами",de:"https://de.wikipedia.org/wiki/Paketverwaltung"},
+tui:{en:"https://en.wikipedia.org/wiki/Text-based_user_interface",ru:"https://ru.wikipedia.org/wiki/Текстовый_интерфейс_пользователя",de:"https://de.wikipedia.org/wiki/Textbasierte_Benutzeroberfläche"},
+mnt:{en:"https://en.wikipedia.org/wiki/Mount_(computing)",ru:"https://ru.wikipedia.org/wiki/Монтирование_файловой_системы",de:"https://de.wikipedia.org/wiki/Mounten"},
+cpp:{en:"https://en.wikipedia.org/wiki/C%2B%2B",ru:"https://ru.wikipedia.org/wiki/C%2B%2B",de:"https://de.wikipedia.org/wiki/C%2B%2B"},
+qt:{en:"https://en.wikipedia.org/wiki/Qt_(software)",ru:"https://ru.wikipedia.org/wiki/Qt",de:"https://de.wikipedia.org/wiki/Qt_(Bibliothek)"}
+};
+const PKGS="networkmanager wpa_supplicant bluez bluez-utils cups openssh pipewire pipewire-pulse pipewire-alsa wireplumber power-profiles-daemon brightnessctl niri xwayland-satellite quickshell qt6-wayland qt6-svg qt6ct swaybg playerctl ly xdg-desktop-portal-gnome xdg-desktop-portal-gtk polkit-gnome gnome-keyring gvfs xdg-user-dirs fish starship ghostty firefox nautilus discord btop cava zed papirus-icon-theme opendoas btrfs-progs dosfstools efibootmgr git curl nano fastfetch pciutils mesa vulkan-icd-loader ttf-jetbrains-mono ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji noto-fonts-cjk archlinux-keyring pacman-contrib zram-generator";
+const CODE={
+prep:`loadkeys us
+ls /sys/firmware/efi
+nmcli device wifi connect "SSID" password "PASSWORD"
+timedatectl set-ntp true
+lsblk`,
+part:`sgdisk -Z /dev/nvme0n1
+sgdisk -n1:0:+1G -t1:ef00 -c1:ESP -n2:0:0 -t2:8300 -c2:fasdeqos /dev/nvme0n1
+mkfs.fat -F32 /dev/nvme0n1p1
+mkfs.btrfs -f -L fasdeqos /dev/nvme0n1p2
+mount /dev/nvme0n1p2 /mnt
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@users
+umount /mnt
+mount -o noatime,compress=zstd:3,ssd,subvol=@ /dev/nvme0n1p2 /mnt
+mkdir -p /mnt/Users /mnt/boot
+mount -o noatime,compress=zstd:3,ssd,subvol=@users /dev/nvme0n1p2 /mnt/Users
+mount -o umask=0077 /dev/nvme0n1p1 /mnt/boot`,
+inst:`sed -i '/^#\\[multilib\\]/,/^#Include/ s/^#//' /etc/pacman.conf
+pacstrap -K /mnt base linux linux-firmware amd-ucode ${PKGS}
+sed -i '/^#\\[multilib\\]/,/^#Include/ s/^#//' /mnt/etc/pacman.conf
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt`,
+conf:`ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+hwclock --systohc
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "KEYMAP=us" > /etc/vconsole.conf
+echo fasdeqos > /etc/hostname
+useradd -m -d /Users/NAME -G wheel,video,audio,input,render,lp -s /usr/bin/fish NAME
+passwd NAME
+passwd -l root
+echo "permit persist :wheel" > /etc/doas.conf
+chmod 0400 /etc/doas.conf
+systemctl enable NetworkManager bluetooth cups sshd power-profiles-daemon systemd-timesyncd ly@tty2
+systemctl set-default graphical.target`,
+boot:`bootctl install
+blkid -s UUID -o value /dev/nvme0n1p2
+printf 'default fasdeqos.conf\\ntimeout 3\\nconsole-mode max\\neditor no\\n' > /boot/loader/loader.conf
+nano /boot/loader/entries/fasdeqos.conf`,
+entry:`title FasdeqOS
+linux /vmlinuz-linux
+initrd /amd-ucode.img
+initrd /initramfs-linux.img
+options root=UUID=ROOT-UUID rootflags=subvol=@ rw`,
+fin:`exit
+umount -R /mnt
+reboot`,
+bind:`Mod+T { spawn "ghostty"; }`,
+bind2:`Mod+T { spawn "firefox"; }`,
+out:`output "DP-1" {
+    mode "2560x1440@165.000"
+    scale 1
+    position x=0 y=0
+    variable-refresh-rate on-demand=true
+}`,
+out2:`output "HDMI-A-1" {
+    mode "1920x1080@60.000"
+    position x=2560 y=0
+}`,
+lay:`input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+    }
+}`,
+lay2:`layout "us,ru"
+layout "us,de"
+layout "us,ru,de"`
+};
+const pre=s=>"<pre><code>"+s.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</code></pre>";
+const a=(u,t)=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`;
+const KB={
+en:{head:["Keys","Action"],groups:[
+["Apps",[["Mod+Return / Mod+T","Terminal (Ghostty)"],["Ctrl+Alt+T","Terminal, fallback"],["Mod+E","Files (Nautilus)"],["Ctrl+Alt+E","Files, fallback"],["Mod+B","Firefox"]]],
+["Shell panels",[["Alt+Space","App launcher"],["Mod+Shift+P","Power menu"],["Mod+Shift+A","Settings"],["Mod+Shift+C","Calendar"],["Mod+Shift+M","Sound and microphone"],["Mod+Shift+N","Network (Wi-Fi / Ethernet)"],["Mod+Shift+B","Bluetooth"],["Mod+Print","Screenshot menu"],["Mod+Shift+S","Screenshot of an area"],["Print","Screenshot of the whole screen"],["Alt+Print","Screenshot of the active window"]]],
+["Windows",[["Mod+Q / Alt+F4","Close window"],["Mod+F","Maximize column"],["Mod+Shift+F","Fullscreen"],["Mod+Shift+V","Floating on/off"],["Mod+O","Overview"],["Mod+W / A / S / D or arrows","Focus up / left / down / right"],["Mod+Shift+arrows","Move column or window"],["Mod+Minus / Mod+Equal","Column width -10% / +10%"],["Mod+Shift+Minus / Mod+Shift+Equal","Window height -10% / +10%"]]],
+["Workspaces",[["Mod+1 … 9","Go to workspace"],["Mod+Ctrl+1 … 9","Move column to workspace"],["Mod+wheel / touchpad scroll","Switch workspaces and columns (Shift moves, Ctrl resizes)"]]],
+["Keyboard layout",[["Alt+Shift or Mod+Space","Next layout"]]],
+["Media keys",[["Volume keys","Volume up, down, mute"],["Play / Next / Previous","Media control"],["Brightness keys","Screen brightness"]]],
+["Session",[["Mod+K or Mod+Shift+/","Show the list of hotkeys"],["Mod+Shift+E","Quit niri (log out)"]]]]},
+ru:{head:["Клавиши","Действие"],groups:[
+["Программы",[["Mod+Return / Mod+T","Терминал (Ghostty)"],["Ctrl+Alt+T","Терминал, запасной вариант"],["Mod+E","Файлы (Nautilus)"],["Ctrl+Alt+E","Файлы, запасной вариант"],["Mod+B","Firefox"]]],
+["Панели шелла",[["Alt+Space","Запуск приложений"],["Mod+Shift+P","Меню питания"],["Mod+Shift+A","Настройки"],["Mod+Shift+C","Календарь"],["Mod+Shift+M","Звук и микрофон"],["Mod+Shift+N","Сеть (Wi-Fi / Ethernet)"],["Mod+Shift+B","Bluetooth"],["Mod+Print","Меню скриншотов"],["Mod+Shift+S","Скриншот области"],["Print","Скриншот всего экрана"],["Alt+Print","Скриншот активного окна"]]],
+["Окна",[["Mod+Q / Alt+F4","Закрыть окно"],["Mod+F","Развернуть колонку"],["Mod+Shift+F","Полный экран"],["Mod+Shift+V","Плавающее окно вкл/выкл"],["Mod+O","Обзор"],["Mod+W / A / S / D или стрелки","Фокус вверх / влево / вниз / вправо"],["Mod+Shift+стрелки","Переместить колонку или окно"],["Mod+Minus / Mod+Equal","Ширина колонки -10% / +10%"],["Mod+Shift+Minus / Mod+Shift+Equal","Высота окна -10% / +10%"]]],
+["Рабочие столы",[["Mod+1 … 9","Перейти на рабочий стол"],["Mod+Ctrl+1 … 9","Перенести колонку на рабочий стол"],["Mod+колесо / скролл тачпада","Переключение столов и колонок (Shift двигает, Ctrl меняет размер)"]]],
+["Раскладка",[["Alt+Shift или Mod+Space","Следующая раскладка"]]],
+["Мультимедиа",[["Клавиши громкости","Громче, тише, без звука"],["Play / Next / Previous","Управление плеером"],["Клавиши яркости","Яркость экрана"]]],
+["Сессия",[["Mod+K или Mod+Shift+/","Список горячих клавиш"],["Mod+Shift+E","Выйти из niri (завершить сессию)"]]]]},
+de:{head:["Tasten","Aktion"],groups:[
+["Programme",[["Mod+Return / Mod+T","Terminal (Ghostty)"],["Ctrl+Alt+T","Terminal, Ersatz"],["Mod+E","Dateien (Nautilus)"],["Ctrl+Alt+E","Dateien, Ersatz"],["Mod+B","Firefox"]]],
+["Shell-Panels",[["Alt+Space","Programmstarter"],["Mod+Shift+P","Ausschaltmenü"],["Mod+Shift+A","Einstellungen"],["Mod+Shift+C","Kalender"],["Mod+Shift+M","Ton und Mikrofon"],["Mod+Shift+N","Netzwerk (WLAN / Ethernet)"],["Mod+Shift+B","Bluetooth"],["Mod+Print","Screenshot-Menü"],["Mod+Shift+S","Screenshot eines Bereichs"],["Print","Screenshot des ganzen Bildschirms"],["Alt+Print","Screenshot des aktiven Fensters"]]],
+["Fenster",[["Mod+Q / Alt+F4","Fenster schließen"],["Mod+F","Spalte maximieren"],["Mod+Shift+F","Vollbild"],["Mod+Shift+V","Schwebend an/aus"],["Mod+O","Übersicht"],["Mod+W / A / S / D oder Pfeile","Fokus oben / links / unten / rechts"],["Mod+Shift+Pfeile","Spalte oder Fenster verschieben"],["Mod+Minus / Mod+Equal","Spaltenbreite -10% / +10%"],["Mod+Shift+Minus / Mod+Shift+Equal","Fensterhöhe -10% / +10%"]]],
+["Arbeitsflächen",[["Mod+1 … 9","Zur Arbeitsfläche wechseln"],["Mod+Ctrl+1 … 9","Spalte auf Arbeitsfläche verschieben"],["Mod+Mausrad / Touchpad-Scrollen","Arbeitsflächen und Spalten wechseln (Shift verschiebt, Ctrl ändert die Größe)"]]],
+["Tastaturlayout",[["Alt+Shift oder Mod+Space","Nächstes Layout"]]],
+["Medientasten",[["Lautstärketasten","Lauter, leiser, stumm"],["Play / Next / Previous","Mediensteuerung"],["Helligkeitstasten","Bildschirmhelligkeit"]]],
+["Sitzung",[["Mod+K oder Mod+Shift+/","Liste der Tastenkürzel anzeigen"],["Mod+Shift+E","niri beenden (abmelden)"]]]]}
+};
+const kbt=l=>{const k=KB[l];let h="<table><tr><th>"+k.head[0]+"</th><th>"+k.head[1]+"</th></tr>";k.groups.forEach(g=>{h+=`<tr><td colspan="2"><b>${g[0]}</b></td></tr>`;g[1].forEach(r=>{h+=`<tr><td>${r[0].split(" / ").map(x=>"<kbd>"+x+"</kbd>").join(" / ")}</td><td>${r[1]}</td></tr>`})});return h+"</table>"};
+const T={
+en:{brand:"FasdeqOS Handbook",toc:"Contents",s:`
+<h1>FasdeqOS Handbook</h1>
+<h2 id="s1">1. What is FasdeqOS</h2>
+<p>FasdeqOS is a semi-independent ${a(LINKS.kernel,"Linux")} distribution that uses ${a(LINKS.arch,"Arch Linux")} technologies and specialises in an easy move from Darwin-based systems (${a(LINKS.apple,"macOS")}) to ${a(LINKS.kernel,"Linux")}.</p>
+<h2 id="s2">2. Installation</h2>
+<p>FasdeqOS offers two ways to install: <b>Express</b> and <b>Expert</b>. Express is the installation with <code>fasdinstaller</code>. Expert is a manual installation with commands and is recommended only for experienced users. FasdeqOS works on UEFI only, Secure Boot must be off.</p>
+<h3 id="s21">2.1 Express</h3>
+<ol>
+<li><b>Boot the ISO.</b> Write it to a USB stick, boot from it in UEFI mode. The live system logs in by itself and starts the installer.</li>
+<li><b>Network.</b> If you have both Ethernet and Wi-Fi, the installer asks which one to use. For Wi-Fi it shows a list of networks with signal strength: pick yours with the arrows, type the password, done.</li>
+<li><b>Extra keyboard layouts.</b> English is always there. Mark the ones you want with Space (Russian, German and so on) and press Enter.</li>
+<li><b>Disk.</b> Choose the disk to install on. <b>ALL DATA ON IT WILL BE ERASED.</b> Check twice.</li>
+<li><b>Desktop, language and time zone.</b> The desktop is niri. Pick your language and your time zone.</li>
+<li><b>Accounts.</b> Type your user name, the computer name and a password. A root password is optional; if you skip it, root stays locked and you use <code>doas</code>.</li>
+<li><b>Swap.</b> zram is on by default. A swap file is optional.</li>
+<li><b>Install.</b> Press install and wait. The installer makes a 1 GiB EFI partition and a btrfs partition with two subvolumes (the system and <code>/Users</code>), installs the system, puts systemd-boot on the disk and builds FasdQuery. The NVIDIA open driver is installed only if you have an NVIDIA card; the AMD or Intel Vulkan driver is installed only for the card you really have.</li>
+<li><b>Reboot.</b> Pull out the USB stick, log in, you are home.</li>
+</ol>
+<h3 id="s22">2.2 Expert</h3>
+<p>This is the Arch Linux installation guide, rewritten for FasdeqOS and for systemd-boot. Replace <code>/dev/nvme0n1</code>, the time zone, the user name and the microcode package (<code>amd-ucode</code> or <code>intel-ucode</code>) with your own. Add the Vulkan driver for your GPU (<code>vulkan-radeon</code> or <code>vulkan-intel</code>) and for NVIDIA <code>linux-headers dkms nvidia-open-dkms nvidia-utils</code>.</p>
+<h4>Preparation</h4>${pre(CODE.prep)}
+<h4>Partitioning</h4><p>ALL DATA ON THE DISK WILL BE ERASED.</p>${pre(CODE.part)}
+<h4>Installing the system</h4>${pre(CODE.inst)}
+<h4>Configuration inside the chroot</h4>${pre(CODE.conf)}
+<h4>Boot loader</h4><p>Use the UUID of the root partition in the entry. Do not forget the second line with the microcode that matches your CPU.</p>${pre(CODE.boot)}${pre(CODE.entry)}
+<h4>Finish</h4>${pre(CODE.fin)}
+<p>The FasdeqOS utilities and configs (<code>pkg</code>, <code>fastab</code>, the niri and Quickshell configs and others) are in the ${a(LINKS.src,"open source repository")}. Copy the utilities to <code>/usr/local/bin</code> and the <code>config</code> folder to <code>/etc/skel/.config</code> before you create your user.</p>
+<h2 id="s3">3. Package manager</h2>
+<p>The ${a(LINKS.pm.en,"package manager")} of FasdeqOS is its own <code>pkg</code>, a wrapper over ${a(LINKS.pacman,"pacman")}.</p>
+<h3 id="s31">3.1 Installing and removing packages</h3>
+<p>Install a package with <code>pkg install NAME</code>. Remove it with <code>pkg remove NAME</code>. Other commands:</p>
+<table><tr><td><code>pkg install --system NAME</code></td><td>install a package as a system one, it will not appear in /Applications (kernels, headers, drivers and libraries are system automatically)</td></tr>
+<tr><td><code>pkg update</code></td><td>refresh package lists</td></tr>
+<tr><td><code>pkg upgrade</code></td><td>download <code>update.sh</code> from the project repository and apply it if it changed</td></tr>
+<tr><td><code>pkg sysupgrade</code></td><td>plain full upgrade of all packages</td></tr>
+<tr><td><code>pkg search / list / info</code></td><td>search, list installed, package info</td></tr></table>
+<p>You can also install by dragging a <code>.appimage</code>, <code>.tar.zst</code> or <code>.pkg</code> file into the <code>/Applications</code> folder. Delete the app (or its folder) from <code>/Applications</code> and it is removed from the system.</p>
+<p>${a(LINKS.tui.en,"TUI")} programs are installed to <code>/Applications/tui</code>. Installing and removing works exactly the same. Desktop shells (quickshell, noctalia, waybar, dms) live in <code>/Applications/shells</code> and work the same way.</p>
+<h3 id="s32">3.2 Kernels</h3>
+<p>Kernels are installed with the same command: <code>pkg install linux-zen</code>, <code>linux-lts</code>, <code>linux-rt</code>, <code>linux-hardened</code> and so on. They do not go to /Applications: they are listed in <code>/System/Kernels</code>. Every kernel gets its own entry in the boot menu automatically, and if DKMS drivers (for example NVIDIA) are installed, the matching headers are installed as well. Choose the kernel in the boot menu at startup.</p>
+<h2 id="s4">4. Niri</h2>
+<p>FasdeqOS uses the ${a(LINKS.niri,"niri")} window manager with a shell built on ${a(LINKS.qs,"Quickshell")}. The config is <code>~/.config/niri/config.kdl</code>.</p>
+<h3 id="s41">4.1 Keybinds</h3>
+<p><kbd>Mod</kbd> is the Win key (the one with the logo, or Cmd on a Mac keyboard).</p>${kbt("en")}
+<h4 id="s411">4.1.1 Changing keybinds</h4>
+<ol>
+<li>Open a terminal: press <kbd>Mod</kbd>+<kbd>T</kbd>.</li>
+<li>Type this and press Enter: <code>nano ~/.config/niri/config.kdl</code>. A simple text editor opens.</li>
+<li>Move with the arrow keys and find the word <code>binds</code>. Under it every line is one shortcut. For example this one opens the terminal:</li>
+</ol>${pre(CODE.bind)}
+<ol start="4"><li>Change what you need. Say you want Firefox on this key instead: replace <code>ghostty</code> with <code>firefox</code>. Keep the quotes and the <code>;</code>.</li></ol>${pre(CODE.bind2)}
+<ol start="5"><li>Save: press <kbd>Ctrl</kbd>+<kbd>O</kbd>, then Enter. Exit: press <kbd>Ctrl</kbd>+<kbd>X</kbd>.</li>
+<li>That is all, niri reloads the config by itself. If you made a mistake, niri shows an error message: open the file again, fix the line, save.</li></ol>
+<h3 id="s42">4.2 Monitor setup</h3>
+<p>If the refresh rate, resolution or position of your monitor is not what you want, change it in the same file. FasdeqOS picks the highest mode on the first login and turns on variable refresh rate where the monitor supports it, but you can always change it.</p>
+<ol><li>See the names and the available modes: run <code>niri msg outputs</code> in the terminal.</li>
+<li>Open <code>nano ~/.config/niri/config.kdl</code> and find a block that starts with <code>output</code> (or add one at the end):</li></ol>${pre(CODE.out)}
+<p><code>"DP-1"</code> is the monitor name from the first step. <code>mode</code> is the resolution and refresh rate, copy it exactly from the list. <code>scale</code> makes everything bigger or smaller. <code>position</code> is where the monitor sits. <code>variable-refresh-rate</code> turns on adaptive sync. For a second monitor to the right of the first one add another block:</p>${pre(CODE.out2)}
+<p>Save with <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter, exit with <kbd>Ctrl</kbd>+<kbd>X</kbd>. The change applies instantly.</p>
+<h3 id="s43">4.3 Wallpaper</h3>
+<p>The wallpaper is shown by <code>swaybg</code>. To change it run in a terminal:</p>${pre("fasd-wallpaper ~/Pictures/my-picture.jpg")}
+<p>The picture is applied right away and remembered. It is stored as the link <code>~/.config/fasdeqos/wallpaper</code>. The default picture is <code>/usr/share/backgrounds/fasdeqos/wallpaper.jpg</code>. To change it by hand replace the link with <code>ln -sf /path/to/picture ~/.config/fasdeqos/wallpaper</code> and run <code>fasd-wallpaper</code>.</p>
+<h3 id="s44">4.4 Adding a keyboard layout</h3>
+<p>The default config has only English. Open the config (<code>nano ~/.config/niri/config.kdl</code>) and find this block:</p>${pre(CODE.lay)}
+<p>Add the layouts you need after a comma, for example:</p>${pre(CODE.lay2)}
+<p>Save and exit. Switch the layout with <kbd>Alt</kbd>+<kbd>Shift</kbd> or <kbd>Mod</kbd>+<kbd>Space</kbd>. The current layout is shown in the top bar. The installer can add layouts for you too.</p>
+<h2 id="s5">5. fastab</h2>
+<p>fastab is a TUI utility over fstab for ${a(LINKS.mnt.en,"mounting")} disks when the system starts. Run <code>fastab</code>: arrows move, Space marks a disk, <kbd>o</kbd> sets mount options, Enter applies. Disks are mounted to <code>/Mount/NAME</code>.</p>
+<h2 id="s6">6. FasdQuery</h2>
+<p>${a(LINKS.fq,"FasdQuery")} is a utility for fast file search written in ${a(LINKS.cpp.en,"C++")} and ${a(LINKS.qt.en,"Qt")}.</p>
+<h2 id="s7">7. Updates</h2>
+<p>Use <code>build.sh</code> from the project repository (${a(LINKS.repo,"github.com/Fasdeq13/fasdeqos-repositoriy")}) to build a fresh ISO, or just run <code>pkg upgrade</code>, which applies <code>update.sh</code> from the same repository.</p>`},
+ru:{brand:"Хендбук FasdeqOS",toc:"Содержание",s:`
+<h1>Хендбук FasdeqOS</h1>
+<h2 id="s1">1. Что такое FasdeqOS</h2>
+<p>FasdeqOS — это полунезависимый ${a(LINKS.kernel,"Linux")} дистрибутив, использующий технологии ${a(LINKS.arch,"Arch Linux")} и специализирующийся на лёгком переходе с систем Darwin (${a(LINKS.apple,"macOS")}) на ${a(LINKS.kernel,"Linux")}.</p>
+<h2 id="s2">2. Установка</h2>
+<p>FasdeqOS предлагает два способа установки: <b>Express</b> и <b>Expert</b>. Express — это установка с помощью <code>fasdinstaller</code>. Expert — ручная установка командами, её рекомендую только опытным пользователям. Работает только UEFI, Secure Boot должен быть выключен.</p>
+<h3 id="s21">2.1 Express</h3>
+<ol>
+<li><b>Загрузите ISO.</b> Запишите образ на флешку и загрузитесь с неё в режиме UEFI. Live-система сама входит и запускает установщик.</li>
+<li><b>Сеть.</b> Если есть и Ethernet, и Wi-Fi, установщик спросит, что использовать. Для Wi-Fi покажет список сетей с уровнем сигнала: выберите свою стрелками, введите пароль, и всё.</li>
+<li><b>Доп. раскладки.</b> Английская есть всегда. Отметьте пробелом нужные (русская, немецкая и т.д.) и нажмите Enter.</li>
+<li><b>Диск.</b> Выберите диск, на который нужно установить систему. <b>ВСЕ ДАННЫЕ НА НЁМ БУДУТ УДАЛЕНЫ.</b> Проверьте дважды.</li>
+<li><b>Окружение, язык и часовой пояс.</b> Окружение — niri. Выберите язык и свой часовой пояс.</li>
+<li><b>Аккаунты.</b> Введите имя пользователя, имя компьютера и пароль. Пароль root по желанию: если его пропустить, root останется заблокированным, а работать нужно через <code>doas</code>.</li>
+<li><b>Swap.</b> zram включён по умолчанию. Файл подкачки по желанию.</li>
+<li><b>Установка.</b> Нажмите «Установить» и подождите. Установщик делает EFI-раздел на 1 ГиБ и btrfs-раздел с двумя субволюмами (система и <code>/Users</code>), ставит систему, кладёт на диск systemd-boot и собирает FasdQuery. Драйвер NVIDIA ставится только если у вас карта NVIDIA, а Vulkan-драйвер AMD или Intel — только для той карты, которая реально есть.</li>
+<li><b>Перезагрузка.</b> Извлеките флешку и войдите в систему — вы дома.</li>
+</ol>
+<h3 id="s22">2.2 Expert</h3>
+<p>Это установка Arch Linux по официальной инструкции, только переписанная под FasdeqOS и systemd-boot. Замените <code>/dev/nvme0n1</code>, часовой пояс, имя пользователя и пакет микрокода (<code>amd-ucode</code> или <code>intel-ucode</code>) на свои. Добавьте Vulkan-драйвер для вашей видеокарты (<code>vulkan-radeon</code> или <code>vulkan-intel</code>), а для NVIDIA — <code>linux-headers dkms nvidia-open-dkms nvidia-utils</code>.</p>
+<h4>Подготовка</h4>${pre(CODE.prep)}
+<h4>Разметка диска</h4><p>ВСЕ ДАННЫЕ НА ДИСКЕ БУДУТ УДАЛЕНЫ.</p>${pre(CODE.part)}
+<h4>Установка системы</h4>${pre(CODE.inst)}
+<h4>Настройка внутри chroot</h4>${pre(CODE.conf)}
+<h4>Загрузчик</h4><p>В записи укажите UUID корневого раздела. Не забудьте строку с микрокодом, подходящим под ваш процессор.</p>${pre(CODE.boot)}${pre(CODE.entry)}
+<h4>Завершение</h4>${pre(CODE.fin)}
+<p>Утилиты и конфиги FasdeqOS (<code>pkg</code>, <code>fastab</code>, конфиги niri и Quickshell и другое) лежат в ${a(LINKS.src,"репозитории с открытым кодом")}. Скопируйте утилиты в <code>/usr/local/bin</code>, а папку <code>config</code> в <code>/etc/skel/.config</code> до создания пользователя.</p>
+<h2 id="s3">3. Пакетный менеджер</h2>
+<p>${a(LINKS.pm.ru,"Пакетным менеджером")} в FasdeqOS является собственный <code>pkg</code> — обёртка над ${a(LINKS.pacman,"pacman")}.</p>
+<h3 id="s31">3.1 Установка и удаление пакетов</h3>
+<p>Установить пакет: <code>pkg install ИМЯ_ПАКЕТА</code>. Удалить: <code>pkg remove ИМЯ_ПАКЕТА</code>. Остальные команды:</p>
+<table><tr><td><code>pkg install --system ИМЯ</code></td><td>поставить как системный пакет, в /Applications он не появится (ядра, хедеры, драйверы и библиотеки системные автоматически)</td></tr>
+<tr><td><code>pkg update</code></td><td>обновить списки пакетов</td></tr>
+<tr><td><code>pkg upgrade</code></td><td>скачать <code>update.sh</code> из репозитория проекта и применить, если он изменился</td></tr>
+<tr><td><code>pkg sysupgrade</code></td><td>обычное полное обновление всех пакетов</td></tr>
+<tr><td><code>pkg search / list / info</code></td><td>поиск, список установленных, информация о пакете</td></tr></table>
+<p>Также можно устанавливать программы, перетаскивая файлы <code>.appimage</code>, <code>.tar.zst</code> или <code>.pkg</code> в папку <code>/Applications</code>. Если удалить приложение (или его папку) из <code>/Applications</code>, оно будет удалено из системы.</p>
+<p>${a(LINKS.tui.ru,"TUI")}-программы ставятся в <code>/Applications/tui</code>. Установка и удаление работают точно так же. Оболочки рабочего стола (quickshell, noctalia, waybar, dms) лежат в <code>/Applications/shells</code> и работают так же.</p>
+<h3 id="s32">3.2 Ядра</h3>
+<p>Ядра устанавливаются той же командой: <code>pkg install linux-zen</code>, <code>linux-lts</code>, <code>linux-rt</code>, <code>linux-hardened</code> и так далее. В /Applications они не попадают: их список находится в <code>/System/Kernels</code>. Каждое ядро автоматически получает собственную запись в меню загрузки, а если установлены DKMS-драйверы (например, NVIDIA), подходящие заголовки устанавливаются тоже. Ядро выбирается в меню загрузки при старте.</p>
+<h2 id="s4">4. Niri</h2>
+<p>В FasdeqOS используется оконный менеджер ${a(LINKS.niri,"niri")} с оболочкой на ${a(LINKS.qs,"Quickshell")}. Конфиг лежит в <code>~/.config/niri/config.kdl</code>.</p>
+<h3 id="s41">4.1 Кейбинды</h3>
+<p><kbd>Mod</kbd> — это клавиша Win (с логотипом, на клавиатуре Mac — Cmd).</p>${kbt("ru")}
+<h4 id="s411">4.1.1 Изменение кейбиндов</h4>
+<ol>
+<li>Откройте терминал: нажмите <kbd>Mod</kbd>+<kbd>T</kbd>.</li>
+<li>Введите и нажмите Enter: <code>nano ~/.config/niri/config.kdl</code>. Откроется простой текстовый редактор.</li>
+<li>Стрелками найдите слово <code>binds</code>. Под ним каждая строка — одно сочетание клавиш. Вот, например, строка, которая открывает терминал:</li>
+</ol>${pre(CODE.bind)}
+<ol start="4"><li>Измените нужное. Допустим, вы хотите, чтобы на это сочетание открывался Firefox: замените <code>ghostty</code> на <code>firefox</code>. Кавычки и <code>;</code> оставьте.</li></ol>${pre(CODE.bind2)}
+<ol start="5"><li>Сохраните: нажмите <kbd>Ctrl</kbd>+<kbd>O</kbd>, затем Enter. Выйдите: <kbd>Ctrl</kbd>+<kbd>X</kbd>.</li>
+<li>Всё, niri сам перечитает конфиг. Если вы ошиблись, niri покажет сообщение об ошибке: откройте файл снова, исправьте строку и сохраните.</li></ol>
+<h3 id="s42">4.2 Настройка мониторов</h3>
+<p>Если частота обновления, разрешение или расположение монитора не те, поменяйте их в том же файле. При первом входе FasdeqOS выбирает максимальный режим и включает переменную частоту (VRR), если монитор её умеет, но изменить это можно в любой момент.</p>
+<ol><li>Посмотрите имена и доступные режимы: выполните в терминале <code>niri msg outputs</code>.</li>
+<li>Откройте <code>nano ~/.config/niri/config.kdl</code>, найдите блок, который начинается с <code>output</code> (или добавьте его в конец):</li></ol>${pre(CODE.out)}
+<p><code>"DP-1"</code> — имя монитора из первого шага. <code>mode</code> — разрешение и частота, копируйте точно из списка. <code>scale</code> делает всё крупнее или мельче. <code>position</code> — где стоит монитор. <code>variable-refresh-rate</code> включает адаптивную синхронизацию. Для второго монитора справа от первого добавьте ещё один блок:</p>${pre(CODE.out2)}
+<p>Сохраните: <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter, выйдите: <kbd>Ctrl</kbd>+<kbd>X</kbd>. Изменения применятся сразу.</p>
+<h3 id="s43">4.3 Смена обоев</h3>
+<p>Обои показывает <code>swaybg</code>. Чтобы сменить, выполните в терминале:</p>${pre("fasd-wallpaper ~/Pictures/my-picture.jpg")}
+<p>Картинка применится сразу и запомнится. Она хранится как ссылка <code>~/.config/fasdeqos/wallpaper</code>. Обои по умолчанию — <code>/usr/share/backgrounds/fasdeqos/wallpaper.jpg</code>. Вручную: замените ссылку командой <code>ln -sf /путь/к/картинке ~/.config/fasdeqos/wallpaper</code> и запустите <code>fasd-wallpaper</code>.</p>
+<h3 id="s44">4.4 Добавление раскладки</h3>
+<p>В конфиге по умолчанию только английская раскладка. Откройте конфиг (<code>nano ~/.config/niri/config.kdl</code>) и найдите такой блок:</p>${pre(CODE.lay)}
+<p>Добавьте нужные раскладки через запятую, например:</p>${pre(CODE.lay2)}
+<p>Сохраните и выйдите. Раскладка переключается <kbd>Alt</kbd>+<kbd>Shift</kbd> или <kbd>Mod</kbd>+<kbd>Space</kbd>. Текущая раскладка видна в верхней панели. Установщик тоже умеет добавлять раскладки за вас.</p>
+<h2 id="s5">5. fastab</h2>
+<p>fastab — это TUI-утилита над fstab для ${a(LINKS.mnt.ru,"монтирования")} дисков при запуске системы. Запустите <code>fastab</code>: стрелки двигают, пробел отмечает диск, <kbd>o</kbd> задаёт параметры монтирования, Enter применяет. Диски монтируются в <code>/Mount/ИМЯ</code>.</p>
+<h2 id="s6">6. FasdQuery</h2>
+<p>${a(LINKS.fq,"FasdQuery")} — это утилита для быстрого поиска файлов, написанная на ${a(LINKS.cpp.ru,"C++")} и ${a(LINKS.qt.ru,"Qt")}.</p>
+<h2 id="s7">7. Обновления</h2>
+<p>Используйте <code>build.sh</code> из репозитория проекта (${a(LINKS.repo,"github.com/Fasdeq13/fasdeqos-repositoriy")}), чтобы собрать свежий ISO, либо просто выполните <code>pkg upgrade</code> — он применит <code>update.sh</code> из того же репозитория.</p>`},
+de:{brand:"FasdeqOS Handbuch",toc:"Inhalt",s:`
+<h1>FasdeqOS Handbuch</h1>
+<h2 id="s1">1. Was ist FasdeqOS</h2>
+<p>FasdeqOS ist eine halbunabhängige ${a(LINKS.kernel,"Linux")}-Distribution, die Technologien von ${a(LINKS.arch,"Arch Linux")} nutzt und sich auf den einfachen Umstieg von Darwin-Systemen (${a(LINKS.apple,"macOS")}) auf ${a(LINKS.kernel,"Linux")} spezialisiert.</p>
+<h2 id="s2">2. Installation</h2>
+<p>FasdeqOS bietet zwei Wege der Installation: <b>Express</b> und <b>Expert</b>. Express ist die Installation mit <code>fasdinstaller</code>. Expert ist eine manuelle Installation mit Befehlen und nur für erfahrene Nutzer empfohlen. FasdeqOS läuft nur mit UEFI, Secure Boot muss aus sein.</p>
+<h3 id="s21">2.1 Express</h3>
+<ol>
+<li><b>ISO starten.</b> Auf einen USB-Stick schreiben und im UEFI-Modus davon starten. Das Live-System meldet sich selbst an und startet den Installer.</li>
+<li><b>Netzwerk.</b> Gibt es Ethernet und WLAN, fragt der Installer, was benutzt werden soll. Für WLAN zeigt er eine Liste mit Signalstärke: mit den Pfeilen auswählen, Passwort eingeben, fertig.</li>
+<li><b>Zusätzliche Tastaturlayouts.</b> Englisch ist immer dabei. Markieren Sie mit der Leertaste weitere (Russisch, Deutsch usw.) und drücken Sie Enter.</li>
+<li><b>Datenträger.</b> Wählen Sie den Datenträger für die Installation. <b>ALLE DATEN DARAUF WERDEN GELÖSCHT.</b> Prüfen Sie es zweimal.</li>
+<li><b>Desktop, Sprache und Zeitzone.</b> Der Desktop ist niri. Wählen Sie Sprache und Zeitzone.</li>
+<li><b>Konten.</b> Geben Sie Benutzername, Computername und Passwort ein. Ein Root-Passwort ist optional: wenn Sie es weglassen, bleibt root gesperrt und Sie arbeiten mit <code>doas</code>.</li>
+<li><b>Swap.</b> zram ist standardmäßig an. Eine Auslagerungsdatei ist optional.</li>
+<li><b>Installieren.</b> Auf Installieren drücken und warten. Der Installer legt eine 1-GiB-EFI-Partition und eine btrfs-Partition mit zwei Subvolumes an (System und <code>/Users</code>), installiert das System, setzt systemd-boot auf den Datenträger und baut FasdQuery. Der NVIDIA-Treiber wird nur installiert, wenn Sie eine NVIDIA-Karte haben; der Vulkan-Treiber für AMD oder Intel nur für die Karte, die wirklich vorhanden ist.</li>
+<li><b>Neustart.</b> USB-Stick abziehen, anmelden, fertig.</li>
+</ol>
+<h3 id="s22">2.2 Expert</h3>
+<p>Das ist die Arch-Linux-Installationsanleitung, umgeschrieben für FasdeqOS und systemd-boot. Ersetzen Sie <code>/dev/nvme0n1</code>, die Zeitzone, den Benutzernamen und das Microcode-Paket (<code>amd-ucode</code> oder <code>intel-ucode</code>) durch Ihre Werte. Fügen Sie den Vulkan-Treiber für Ihre GPU hinzu (<code>vulkan-radeon</code> oder <code>vulkan-intel</code>), für NVIDIA <code>linux-headers dkms nvidia-open-dkms nvidia-utils</code>.</p>
+<h4>Vorbereitung</h4>${pre(CODE.prep)}
+<h4>Partitionieren</h4><p>ALLE DATEN AUF DEM DATENTRÄGER WERDEN GELÖSCHT.</p>${pre(CODE.part)}
+<h4>System installieren</h4>${pre(CODE.inst)}
+<h4>Konfiguration im Chroot</h4>${pre(CODE.conf)}
+<h4>Bootloader</h4><p>Tragen Sie in den Eintrag die UUID der Root-Partition ein. Vergessen Sie die Microcode-Zeile für Ihre CPU nicht.</p>${pre(CODE.boot)}${pre(CODE.entry)}
+<h4>Abschluss</h4>${pre(CODE.fin)}
+<p>Die FasdeqOS-Werkzeuge und Konfigurationen (<code>pkg</code>, <code>fastab</code>, die niri- und Quickshell-Konfigurationen und mehr) liegen im ${a(LINKS.src,"Open-Source-Repository")}. Kopieren Sie die Werkzeuge nach <code>/usr/local/bin</code> und den Ordner <code>config</code> nach <code>/etc/skel/.config</code>, bevor Sie den Benutzer anlegen.</p>
+<h2 id="s3">3. Paketverwaltung</h2>
+<p>Die ${a(LINKS.pm.de,"Paketverwaltung")} von FasdeqOS ist das eigene <code>pkg</code>, ein Wrapper um ${a(LINKS.pacman,"pacman")}.</p>
+<h3 id="s31">3.1 Pakete installieren und entfernen</h3>
+<p>Paket installieren: <code>pkg install PAKETNAME</code>. Entfernen: <code>pkg remove PAKETNAME</code>. Weitere Befehle:</p>
+<table><tr><td><code>pkg install --system NAME</code></td><td>als Systempaket installieren, es erscheint nicht in /Applications (Kernel, Header, Treiber und Bibliotheken sind automatisch Systempakete)</td></tr>
+<tr><td><code>pkg update</code></td><td>Paketlisten aktualisieren</td></tr>
+<tr><td><code>pkg upgrade</code></td><td><code>update.sh</code> aus dem Projekt-Repository laden und anwenden, wenn es sich geändert hat</td></tr>
+<tr><td><code>pkg sysupgrade</code></td><td>normales vollständiges Update aller Pakete</td></tr>
+<tr><td><code>pkg search / list / info</code></td><td>suchen, installierte anzeigen, Paketinfo</td></tr></table>
+<p>Sie können auch installieren, indem Sie eine <code>.appimage</code>-, <code>.tar.zst</code>- oder <code>.pkg</code>-Datei in den Ordner <code>/Applications</code> ziehen. Löschen Sie die App (oder ihren Ordner) aus <code>/Applications</code>, wird sie aus dem System entfernt.</p>
+<p>${a(LINKS.tui.de,"TUI")}-Programme werden nach <code>/Applications/tui</code> installiert. Installieren und Entfernen funktioniert genauso. Desktop-Shells (quickshell, noctalia, waybar, dms) liegen in <code>/Applications/shells</code> und funktionieren genauso.</p>
+<h3 id="s32">3.2 Kernel</h3>
+<p>Kernel werden mit demselben Befehl installiert: <code>pkg install linux-zen</code>, <code>linux-lts</code>, <code>linux-rt</code>, <code>linux-hardened</code> und so weiter. Sie landen nicht in /Applications, sondern sind in <code>/System/Kernels</code> aufgelistet. Jeder Kernel bekommt automatisch einen eigenen Eintrag im Bootmenü, und wenn DKMS-Treiber (zum Beispiel NVIDIA) installiert sind, werden die passenden Header mitinstalliert. Den Kernel wählen Sie beim Start im Bootmenü.</p>
+<h2 id="s4">4. Niri</h2>
+<p>FasdeqOS nutzt den Fenstermanager ${a(LINKS.niri,"niri")} mit einer Shell auf Basis von ${a(LINKS.qs,"Quickshell")}. Die Konfiguration liegt in <code>~/.config/niri/config.kdl</code>.</p>
+<h3 id="s41">4.1 Tastenkürzel</h3>
+<p><kbd>Mod</kbd> ist die Win-Taste (mit dem Logo, auf einer Mac-Tastatur Cmd).</p>${kbt("de")}
+<h4 id="s411">4.1.1 Tastenkürzel ändern</h4>
+<ol>
+<li>Terminal öffnen: <kbd>Mod</kbd>+<kbd>T</kbd> drücken.</li>
+<li>Geben Sie das ein und drücken Sie Enter: <code>nano ~/.config/niri/config.kdl</code>. Ein einfacher Texteditor öffnet sich.</li>
+<li>Suchen Sie mit den Pfeiltasten das Wort <code>binds</code>. Darunter ist jede Zeile ein Tastenkürzel. Diese Zeile öffnet zum Beispiel das Terminal:</li>
+</ol>${pre(CODE.bind)}
+<ol start="4"><li>Ändern Sie, was Sie brauchen. Soll auf dieser Taste Firefox starten, ersetzen Sie <code>ghostty</code> durch <code>firefox</code>. Anführungszeichen und <code>;</code> bleiben.</li></ol>${pre(CODE.bind2)}
+<ol start="5"><li>Speichern: <kbd>Ctrl</kbd>+<kbd>O</kbd>, dann Enter. Beenden: <kbd>Ctrl</kbd>+<kbd>X</kbd>.</li>
+<li>Das war's, niri lädt die Konfiguration selbst neu. Bei einem Fehler zeigt niri eine Meldung: Datei wieder öffnen, Zeile korrigieren, speichern.</li></ol>
+<h3 id="s42">4.2 Monitore einrichten</h3>
+<p>Stimmen Bildwiederholrate, Auflösung oder Position Ihres Monitors nicht, ändern Sie sie in derselben Datei. FasdeqOS wählt beim ersten Login den höchsten Modus und schaltet variable Bildwiederholrate (VRR) ein, wenn der Monitor sie kann, Sie können es aber jederzeit ändern.</p>
+<ol><li>Namen und verfügbare Modi anzeigen: <code>niri msg outputs</code> im Terminal ausführen.</li>
+<li>Öffnen Sie <code>nano ~/.config/niri/config.kdl</code> und suchen Sie einen Block, der mit <code>output</code> beginnt (oder fügen Sie ihn am Ende hinzu):</li></ol>${pre(CODE.out)}
+<p><code>"DP-1"</code> ist der Monitorname aus dem ersten Schritt. <code>mode</code> ist Auflösung und Bildwiederholrate, genau aus der Liste kopieren. <code>scale</code> macht alles größer oder kleiner. <code>position</code> ist die Lage des Monitors. <code>variable-refresh-rate</code> schaltet Adaptive Sync ein. Für einen zweiten Monitor rechts vom ersten fügen Sie einen weiteren Block hinzu:</p>${pre(CODE.out2)}
+<p>Speichern mit <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter, beenden mit <kbd>Ctrl</kbd>+<kbd>X</kbd>. Die Änderung gilt sofort.</p>
+<h3 id="s43">4.3 Hintergrundbild ändern</h3>
+<p>Das Hintergrundbild zeigt <code>swaybg</code>. Zum Ändern im Terminal ausführen:</p>${pre("fasd-wallpaper ~/Pictures/my-picture.jpg")}
+<p>Das Bild wird sofort angewendet und gemerkt. Es wird als Link <code>~/.config/fasdeqos/wallpaper</code> gespeichert. Das Standardbild ist <code>/usr/share/backgrounds/fasdeqos/wallpaper.jpg</code>. Von Hand: Link mit <code>ln -sf /pfad/zum/bild ~/.config/fasdeqos/wallpaper</code> ersetzen und <code>fasd-wallpaper</code> ausführen.</p>
+<h3 id="s44">4.4 Tastaturlayout hinzufügen</h3>
+<p>Die Standardkonfiguration enthält nur Englisch. Öffnen Sie die Konfiguration (<code>nano ~/.config/niri/config.kdl</code>) und suchen Sie diesen Block:</p>${pre(CODE.lay)}
+<p>Fügen Sie die gewünschten Layouts nach einem Komma hinzu, zum Beispiel:</p>${pre(CODE.lay2)}
+<p>Speichern und beenden. Das Layout wechseln Sie mit <kbd>Alt</kbd>+<kbd>Shift</kbd> oder <kbd>Mod</kbd>+<kbd>Space</kbd>. Das aktuelle Layout steht in der oberen Leiste. Der Installer kann Layouts auch für Sie hinzufügen.</p>
+<h2 id="s5">5. fastab</h2>
+<p>fastab ist ein TUI-Werkzeug über fstab, um Datenträger beim Systemstart zu ${a(LINKS.mnt.de,"mounten")}. Starten Sie <code>fastab</code>: Pfeile bewegen, Leertaste markiert einen Datenträger, <kbd>o</kbd> setzt Mount-Optionen, Enter wendet an. Datenträger werden nach <code>/Mount/NAME</code> eingehängt.</p>
+<h2 id="s6">6. FasdQuery</h2>
+<p>${a(LINKS.fq,"FasdQuery")} ist ein Werkzeug für die schnelle Dateisuche, geschrieben in ${a(LINKS.cpp.de,"C++")} und ${a(LINKS.qt.de,"Qt")}.</p>
+<h2 id="s7">7. Updates</h2>
+<p>Nutzen Sie <code>build.sh</code> aus dem Projekt-Repository (${a(LINKS.repo,"github.com/Fasdeq13/fasdeqos-repositoriy")}), um ein frisches ISO zu bauen, oder führen Sie einfach <code>pkg upgrade</code> aus, das <code>update.sh</code> aus demselben Repository anwendet.</p>`}
+};
+const $=s=>document.querySelector(s);
+const pick=()=>{
+let s=null;try{s=localStorage.getItem("fq-lang")}catch(e){}
+if(s&&T[s])return s;
+const ls=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||""];
+for(const x of ls){const c=String(x).slice(0,2).toLowerCase();if(T[c])return c}
+return null};
+const render=l=>{
+try{localStorage.setItem("fq-lang",l)}catch(e){}
+document.documentElement.lang=l;
+$("#brand").textContent=T[l].brand;
+document.title=T[l].brand;
+$("#tocH").textContent=T[l].toc;
+$("#main").innerHTML=T[l].s;
+let t="";
+document.querySelectorAll("#main h2,#main h3,#main h4").forEach(h=>{
+if(!h.id)return;
+const c=h.tagName==="H2"?"":h.tagName==="H3"?"l3":"l4";
+t+=`<a class="${c}" href="#${h.id}">${h.textContent}</a>`});
+$("#toc").innerHTML=t;
+document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===l));
+$("#modal").classList.remove("on")};
+document.querySelectorAll("[data-l]").forEach(b=>b.addEventListener("click",()=>render(b.dataset.l)));
+const l0=pick();
+if(l0)render(l0);else{render("en");$("#modal").classList.add("on")}
+</script>
+</body>
+</html>
